@@ -1,5 +1,5 @@
 INPUT = main.cpp
-OUTPUT = main
+OUTPUT = bin/main
 
 # NOTE:
 # - EXE requires dlls in the same folder to run.
@@ -16,4 +16,4 @@ all : $(INPUT)
 	-LC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\lib \
 	-w -Wl,-subsystem,windows \
 	-lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf \
-	-o $(OBJ_NAME)
+	-o $(OUTPUT)
