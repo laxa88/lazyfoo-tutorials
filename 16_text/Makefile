@@ -1,5 +1,9 @@
 INPUT = main.cpp
-OUTPUT = bin/main
+OUTPUT = main
+
+# NOTE:
+# - EXE requires dlls in the same folder to run.
+# - run `main.exe > log.txt` to log errors
 
 #This is the target that compiles our executable
 all : $(INPUT)
