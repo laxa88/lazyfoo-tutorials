@@ -53,6 +53,9 @@ int main()
     auto tp1 = chrono::system_clock::now();
     auto tp2 = chrono::system_clock::now();
 
+    vector<float> fpses;
+    float fTotalFps = 0.0;
+
     while (1)
     {
         tp2 = chrono::system_clock::now();
@@ -236,7 +239,21 @@ int main()
         // Map and stats
         // ==================================================
 
-        swprintf(screen, 40, L"X=%3.1f, Y=%3.1f, A=%3.1f FPS=%3.1f", fPlayerX, fPlayerY, fPlayerA, 1.0f / fElapsedTime);
+        if (fElapsedTime < 0.01f)
+        {
+            fElapsedTime = 0.01f;
+        }
+        float fCurrFps = 1.0f / fElapsedTime;
+        fTotalFps += fCurrFps;
+        fpses.push_back(fCurrFps);
+        if (fpses.size() > 60)
+        {
+            fTotalFps -= fpses.front();
+            fpses.erase(fpses.begin());
+        }
+        float fFps = fTotalFps / (float)fpses.size();
+
+        swprintf(screen, 40, L"X=%3.1f, Y=%3.1f, A=%3.1f FPS=%3.1f", fPlayerX, fPlayerY, fPlayerA, fFps);
 
         for (int nx = 0; nx < nMapWidth; nx++)
         {
