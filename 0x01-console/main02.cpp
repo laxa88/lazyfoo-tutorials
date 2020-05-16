@@ -242,11 +242,11 @@ int main()
         {
             for (int ny = 0; ny < nMapHeight; ny++)
             {
-                screen[(ny + 1) * nScreenWidth + nx] = map[ny * nMapWidth + nx];
+                screen[(ny + 1) * nScreenWidth + nx] = map[ny * nMapWidth + (nMapWidth - nx - 1)];
             }
         }
 
-        screen[((int)fPlayerY + 1) * nScreenWidth + (int)fPlayerX] = 'x';
+        screen[((int)fPlayerY + 1) * nScreenWidth + (int)(nMapWidth - fPlayerX)] = 'x';
 
         // ==================================================
         // Output to screen
