@@ -9,8 +9,8 @@
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-const int texW = SCREEN_WIDTH / 10;
-const int texH = SCREEN_HEIGHT / 10;
+const int texW = SCREEN_WIDTH / 2;
+const int texH = SCREEN_HEIGHT / 2;
 bool game_running = true;
 
 bool init();
@@ -94,7 +94,7 @@ void game_loop()
 void main_loop()
 {
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(game_loop, 30, 1);
+    emscripten_set_main_loop(game_loop, 0, 1);
 #else
     while (game_running)
     {
