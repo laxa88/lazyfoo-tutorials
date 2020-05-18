@@ -14,3 +14,6 @@ all : $(OBJS)
 	-w -Wl,-subsystem,windows \
 	-static \
 	-o $(OBJ_NAME)
+
+# web build (-03 flag helps!)
+# emcc main01.cpp -O3 -s USE_SDL=2 -o js/webgame.html
