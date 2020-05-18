@@ -52,8 +52,10 @@ int main(int argc, char *args[])
     }
 
     int posX = 0, posY = 0;
+    int texW = SCREEN_WIDTH / 10;
+    int texH = SCREEN_HEIGHT / 10;
     renderer = SDL_CreateRenderer(window, -1, 0);
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 8, 8);
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, texW, texH);
 
     while (true)
     {
@@ -65,8 +67,24 @@ int main(int argc, char *args[])
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, rand() % 255, rand() % 255, rand() % 255, rand() % 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
+
+        // Initialize texture pixels to a red opaque RGBA value
+        unsigned char *bytes = nullptr;
+        int pitch = 0; // row of pixels
+        SDL_LockTexture(texture, NULL, reinterpret_cast<void **>(&bytes), &pitch);
+        for (int y = 0; y < texH; y++)
+        {
+            for (int x = 0; x < texW; x++)
+            {
+                unsigned char rgba[4] = {rand() % 255, rand() % 255, rand() % 255, rand() % 255};
+                memcpy(&bytes[(y * texW + x) * sizeof(rgba)], rgba, sizeof(rgba));
+            }
+        }
+        SDL_UnlockTexture(texture);
+
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
     }
 
