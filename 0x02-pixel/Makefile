@@ -11,5 +11,6 @@ all : $(OBJS)
 	-LC:\wy-dev\sdl2-mingw-32\lib \
 	-lmingw32 -lSDL2main -lSDL2 \
 	-lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lsetupapi -lversion \
+	-w -Wl,-subsystem,windows \
 	-static \
 	-o $(OBJ_NAME)
