@@ -3,8 +3,9 @@
 #include <random>
 #include <cstring>
 
-// uncomment this when building for JS
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#endif
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
