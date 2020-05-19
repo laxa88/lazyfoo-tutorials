@@ -82,6 +82,7 @@ void game_loop()
     glClearColor(1.f, 0.f, 1.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // https://stackoverflow.com/questions/42405420/how-to-draw-a-single-pixel-in-opengl
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glPointSize(1);
