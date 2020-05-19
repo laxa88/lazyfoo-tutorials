@@ -23,6 +23,10 @@ typedef int32_t b32;
 #define WinWidth 480
 #define WinHeight 320
 
+const int ps = 4;
+const int texW = WinWidth / ps;
+const int texH = WinHeight / ps;
+
 u32 WindowFlags = SDL_WINDOW_OPENGL;
 SDL_Window *Window;
 
@@ -85,16 +89,16 @@ void game_loop()
     // https://stackoverflow.com/questions/42405420/how-to-draw-a-single-pixel-in-opengl
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glPointSize(1);
-    glOrtho(0.0, WinWidth, WinHeight, 0.0, 0.0, 100.0);
+    glPointSize(ps);
+    glOrtho(0.0, texW, texH, 0.0, 0.0, 10.0);
     glBegin(GL_POINTS);
-    for (int y = 0; y <= WinHeight; y++)
+    for (int y = 0; y <= texH; y++)
     {
-        for (int x = 0; x <= WinWidth; x++)
+        for (int x = 0; x <= texW; x++)
         {
             // not supported by webGL
             glColor3f(random(100, 100.0), random(100, 100.0), random(100, 100.0));
-            glVertex2i(x, y);
+            glVertex2f(x + .5f, y + .5f);
         }
     }
     glEnd();
