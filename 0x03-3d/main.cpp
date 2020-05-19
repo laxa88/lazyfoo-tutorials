@@ -79,7 +79,7 @@ void game_loop()
     }
 
     glViewport(0, 0, WinWidth, WinHeight);
-    glClearColor(1.f, 0.f, 1.f, 0.f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // https://stackoverflow.com/questions/42405420/how-to-draw-a-single-pixel-in-opengl
@@ -88,9 +88,9 @@ void game_loop()
     glPointSize(1);
     glOrtho(0.0, WinWidth, WinHeight, 0.0, 0.0, 100.0);
     glBegin(GL_POINTS);
-    for (int y = 0; y < WinHeight; y++)
+    for (int y = 0; y <= WinHeight; y++)
     {
-        for (int x = 0; x < WinWidth; x++)
+        for (int x = 0; x <= WinWidth; x++)
         {
             // not supported by webGL
             glColor3f(random(100, 100.0), random(100, 100.0), random(100, 100.0));
