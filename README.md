@@ -4,13 +4,25 @@
 
 ### Build
 
-Desktop
+#### Desktop
 
 - Install [MinGW](https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/)
 - Update `Makefile`'s Include paths for SDL `include` and `lib` folder.
 - Run `mingw32-make.exe` within the folder that contains the `Makefile`.
 
-JS
+#### OSX
+
+- Use brew: `brew update` > `brew upgrade`
+- Install GCC: `brew install gcc`
+- Install SDL2 and take advantage of brew's default directory: `brew install sdl2`
+- Run `g++ main.cpp -o main -L/usr/local/lib -lSDL2`
+
+Notes:
+
+- The result is a unix executable, which opens terminal to run the game.
+- TODO: Figure out how to bundle the game into `.app` executable for distribution.
+
+#### JS
 
 - Install emscripten
 - Open `emcmdprompt.bat` (which contains `emcc` command) from installation folder
