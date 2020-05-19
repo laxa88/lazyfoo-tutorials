@@ -36,12 +36,12 @@ void init()
     SDL_GLContext Context = SDL_GL_CreateContext(Window);
 }
 
-int random(int mod, float div)
+float random(int mod, float div)
 {
 #ifdef __EMSCRIPTEN__
     return emscripten_random() * mod / div;
 #else
-    return rand() % mod / div;
+    return (rand() % mod) / div;
 #endif
 }
 
@@ -93,7 +93,7 @@ void game_loop()
         for (int x = 0; x < WinWidth; x++)
         {
             // not supported by webGL
-            glColor3f(random(200, 100.0), random(200, 100.0), random(200, 100.0));
+            glColor3f(random(100, 100.0), random(100, 100.0), random(100, 100.0));
             glVertex2i(x, y);
         }
     }
