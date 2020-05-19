@@ -37,9 +37,10 @@ Notes:
 
 - [GCC docs for options](https://gcc.gnu.org/onlinedocs/gcc-3.4.6/gcc/Invoking-GCC.html#Invoking-GCC)
 
-# additional reading
+# Additional reading
 
-https://lyceum-allotments.github.io/2016/06/emscripten-and-sdl2-tutorial-part-4-look-owl/
+- https://lyceum-allotments.github.io/2016/06/emscripten-and-sdl2-tutorial-part-4-look-owl/
+- https://github.com/redblobgames/helloworld-sdl2-opengl-emscripten
 
 # VS Code C/C++ include paths
 
