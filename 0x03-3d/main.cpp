@@ -11,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <GL/gl.h>
+#include <random>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -19,8 +20,8 @@ typedef int32_t i32;
 typedef uint32_t u32;
 typedef int32_t b32;
 
-#define WinWidth 1000
-#define WinHeight 1000
+#define WinWidth 480
+#define WinHeight 320
 
 u32 WindowFlags = SDL_WINDOW_OPENGL;
 SDL_Window *Window;
@@ -30,9 +31,18 @@ b32 FullScreen = 0;
 
 void init()
 {
-    Window = SDL_CreateWindow("OpenGL Test", 0, 0, WinWidth, WinHeight, WindowFlags);
+    Window = SDL_CreateWindow("OpenGL Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WinWidth, WinHeight, WindowFlags);
     assert(Window);
     SDL_GLContext Context = SDL_GL_CreateContext(Window);
+}
+
+int random(int mod, float div)
+{
+#ifdef __EMSCRIPTEN__
+    return emscripten_random() * mod / div;
+#else
+    return rand() % mod / div;
+#endif
 }
 
 void game_loop()
@@ -71,6 +81,22 @@ void game_loop()
     glViewport(0, 0, WinWidth, WinHeight);
     glClearColor(1.f, 0.f, 1.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glPointSize(1);
+    glOrtho(0.0, WinWidth, WinHeight, 0.0, 0.0, 100.0);
+    glBegin(GL_POINTS);
+    for (int y = 0; y < WinHeight; y++)
+    {
+        for (int x = 0; x < WinWidth; x++)
+        {
+            // not supported by webGL
+            glColor3f(random(200, 100.0), random(200, 100.0), random(200, 100.0));
+            glVertex2i(x, y);
+        }
+    }
+    glEnd();
 
     SDL_GL_SwapWindow(Window);
 }
