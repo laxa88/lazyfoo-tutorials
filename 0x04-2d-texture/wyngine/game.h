@@ -5,6 +5,8 @@
 #include <emscripten.h>
 #endif
 
+void emscriptenOnUpdate(void *arg);
+
 class Wyngine
 {
 protected:
@@ -53,7 +55,7 @@ public:
     void run()
     {
 #ifdef __EMSCRIPTEN__
-        emscripten_set_main_loop(onUpdate, 0, 1);
+        emscripten_set_main_loop_arg(emscriptenOnUpdate, this, 0, 1);
 #else
         while (gameRunning)
         {
@@ -84,3 +86,9 @@ private:
         return true;
     }
 };
+
+// Emscripten only supports plain functions, not member functions
+void emscriptenOnUpdate(void *arg)
+{
+    static_cast<Wyngine *>(arg)->onUpdate();
+}
