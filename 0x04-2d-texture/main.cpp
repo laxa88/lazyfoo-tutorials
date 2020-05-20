@@ -1,12 +1,12 @@
 // based on https://lazyfoo.net/tutorials/SDL/04_key_presses/index.php
 
 #include <SDL2/SDL.h>
-#include <stdio.h>
 #include <cstring>
 
 #include "game.h"
 #include "keyboard.h"
 #include "image.h"
+#include "random.h"
 
 SDL_Event windowEvent;
 
@@ -85,7 +85,14 @@ public:
         unsigned char *bytes = nullptr;
         int pitch = 0; // row of pixels
         SDL_LockTexture(texture, NULL, reinterpret_cast<void **>(&bytes), &pitch);
-        // draw
+        for (int y = 0; y < texH; y++)
+        {
+            for (int x = 0; x < texW; x++)
+            {
+                unsigned char rgba[4] = {random(255), random(255), random(255), random(255)};
+                memcpy(&bytes[(y * texW + x) * sizeof(rgba)], rgba, sizeof(rgba));
+            }
+        }
         SDL_UnlockTexture(texture);
 
         SDL_RenderCopy(renderer, texture, NULL, NULL);
