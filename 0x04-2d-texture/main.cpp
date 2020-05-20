@@ -3,10 +3,10 @@
 #include <SDL2/SDL.h>
 #include <cstring>
 
-#include "game.h"
-#include "keyboard.h"
-#include "image.h"
-#include "random.h"
+#include "wyngine/game.h"
+#include "wyngine/keyboard.h"
+#include "wyngine/image.h"
+#include "wyngine/random.h"
 
 SDL_Event windowEvent;
 
