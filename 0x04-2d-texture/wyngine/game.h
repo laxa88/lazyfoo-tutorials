@@ -87,6 +87,7 @@ private:
     }
 };
 
+// Reference: https://stackoverflow.com/questions/55415179/unable-to-pass-a-proper-lambda-to-emscripten-set-main-loop
 // Emscripten only supports plain functions, not member functions
 void emscriptenOnUpdate(void *arg)
 {
