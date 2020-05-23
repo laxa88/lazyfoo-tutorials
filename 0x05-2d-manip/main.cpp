@@ -33,7 +33,7 @@ private:
         bool success = true;
 
         //Load default surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = LoadBMP(renderer, "assets/press.bmp");
+        gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadPNG(renderer, "assets/press.bmp");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] == NULL)
         {
             printf("Failed to load default image!\n");
@@ -41,7 +41,7 @@ private:
         }
 
         //Load up surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_UP] = LoadBMP(renderer, "assets/up.bmp");
+        gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadPNG(renderer, "assets/up.bmp");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_UP] == NULL)
         {
             printf("Failed to load up image!\n");
@@ -49,7 +49,7 @@ private:
         }
 
         //Load down surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = LoadBMP(renderer, "assets/down.bmp");
+        gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadPNG(renderer, "assets/down.bmp");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] == NULL)
         {
             printf("Failed to load down image!\n");
@@ -57,7 +57,7 @@ private:
         }
 
         //Load left surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = LoadBMP(renderer, "assets/left.bmp");
+        gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadPNG(renderer, "assets/left.bmp");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] == NULL)
         {
             printf("Failed to load left image!\n");
@@ -65,7 +65,7 @@ private:
         }
 
         //Load right surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = LoadBMP(renderer, "assets/right.bmp");
+        gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadPNG(renderer, "assets/right.bmp");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] == NULL)
         {
             printf("Failed to load right image!\n");
@@ -80,7 +80,7 @@ public:
     {
     }
 
-    Game() : Wyngine("Wyngine", 1024, 768, 2)
+    Game() : Wyngine("Wyngine", 640, 480, 2)
     {
         if (gameRunning)
         {
@@ -102,6 +102,10 @@ public:
             {
                 switch (windowEvent.key.keysym.sym)
                 {
+                case SDLK_ESCAPE:
+                    gameRunning = false;
+                    break;
+
                 case SDLK_UP:
                     gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_UP];
                     break;
