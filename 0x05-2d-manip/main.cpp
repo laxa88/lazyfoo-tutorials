@@ -1,7 +1,5 @@
 // references:
-// https://lazyfoo.net/tutorials/SDL/04_key_presses/index.php
-// https://lazyfoo.net/tutorials/SDL/05_optimized_surface_loading_and_soft_stretching/index.php
-// https://lazyfoo.net/tutorials/SDL/07_texture_loading_and_rendering/index.php
+// http://lazyfoo.net/tutorials/SDL/11_clip_rendering_and_sprite_sheets/index.php
 
 #include <SDL2/SDL.h>
 #include <cstring>
@@ -15,15 +13,9 @@ class Game : public Wyngine
 {
 private:
     SDL_Event windowEvent;
-
-    SDL_Texture *gKeyPressTextures[KEY_PRESS_SURFACE_TOTAL];
-    SDL_Texture *gCurrentTexture = NULL;
+    SDL_Texture *tSprite = NULL;
 
     // TODO
-    // replace PNG load with PNG load
-    // check desktop build and size
-    // check JS output and build size
-    // refactor to use spritesheet instead
     // add animation logic for spritesheet
     // publish new post
 
@@ -31,61 +23,31 @@ private:
     {
         bool success = true;
 
-        //Load default surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadPNG(windowRenderer, "assets/press.png");
-        if (gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] == NULL)
+        tSprite = loadPNG(windowRenderer, "assets/sprites.png");
+        if (tSprite == NULL)
         {
-            printf("Failed to load default image!\n");
-            success = false;
-        }
-
-        //Load up surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadPNG(windowRenderer, "assets/up.png");
-        if (gKeyPressTextures[KEY_PRESS_SURFACE_UP] == NULL)
-        {
-            printf("Failed to load up image!\n");
-            success = false;
-        }
-
-        //Load down surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadPNG(windowRenderer, "assets/down.png");
-        if (gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] == NULL)
-        {
-            printf("Failed to load down image!\n");
-            success = false;
-        }
-
-        //Load left surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadPNG(windowRenderer, "assets/left.png");
-        if (gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] == NULL)
-        {
-            printf("Failed to load left image!\n");
-            success = false;
-        }
-
-        //Load right surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadPNG(windowRenderer, "assets/right.png");
-        if (gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] == NULL)
-        {
-            printf("Failed to load right image!\n");
+            printf("Failed to load image!\n");
             success = false;
         }
 
         return success;
     }
 
-public:
-    void foo()
+    void loadSprites()
     {
+        addSprite(new WY_Sprite(tSprite, {0, 0, 50, 50}, {0, 0, 50, 50}), true);
+        addSprite(new WY_Sprite(tSprite, {50, 0, 50, 50}, {getScreenW() - 50, 0, 50, 50}), true);
+        addSprite(new WY_Sprite(tSprite, {0, 50, 50, 50}, {0, getScreenH() - 50, 50, 50}), true);
+        addSprite(new WY_Sprite(tSprite, {50, 50, 50, 50}, {getScreenW() - 50, getScreenH() - 50, 50, 50}), true);
     }
 
+public:
     Game() : Wyngine("Wyngine", 640, 480, 4)
     {
         if (gameRunning)
         {
             loadMedia();
-
-            gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT];
+            loadSprites();
         }
     }
 
@@ -104,34 +66,9 @@ public:
                 case SDLK_ESCAPE:
                     gameRunning = false;
                     break;
-
-                case SDLK_UP:
-                    gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_UP];
-                    break;
-
-                case SDLK_DOWN:
-                    gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DOWN];
-                    break;
-
-                case SDLK_LEFT:
-                    gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_LEFT];
-                    break;
-
-                case SDLK_RIGHT:
-                    gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT];
-                    break;
-
-                default:
-                    gCurrentTexture = gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT];
-                    break;
                 }
             }
         }
-    }
-
-    void onDraw()
-    {
-        SDL_RenderCopy(windowRenderer, gCurrentTexture, NULL, NULL);
     }
 };
 
