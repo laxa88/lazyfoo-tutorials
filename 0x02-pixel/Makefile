@@ -16,4 +16,4 @@ all : $(OBJS)
 	-o $(OBJ_NAME)
 
 # web build (-03 flag helps!)
-# emcc main01.cpp -O3 -s USE_SDL=2 -o js/webgame.html
+# emcc main01.cpp -O3 -s USE_SDL=2 -o bin-js/webgame.html

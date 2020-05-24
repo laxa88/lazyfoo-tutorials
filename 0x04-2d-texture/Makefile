@@ -16,4 +16,4 @@ all : $(OBJS)
 	-o $(OBJ_NAME)
 
 # web build (-03 flag helps!)
-# emcc main.cpp -O3 -s USE_SDL=2 --preload-file assets -o js/webgame.html
+# emcc main.cpp -O3 -s USE_SDL=2 --preload-file assets -o bin-js/webgame.html

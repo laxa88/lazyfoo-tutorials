@@ -26,7 +26,7 @@ Notes:
 
 - Install emscripten
 - Open `emcmdprompt.bat` (which contains `emcc` command) from installation folder
-- Run `emcc` with built-in SDL libs, e.g. `emcc main.cpp -O3 -s USE_SDL=2 -s USE_SDL_IMAGE=2 --preload-file img -o js/webgame.html`
+- Run `emcc` with built-in SDL libs, e.g. `emcc main.cpp -O3 -s USE_SDL=2 -s USE_SDL_IMAGE=2 --preload-file img -o bin-js/webgame.html`
 
 # Debug
 
