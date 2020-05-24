@@ -1,33 +1,54 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-class Sprite
+class WY_Sprite
 {
+    bool active = false;
     int frame = 0;
     SDL_Texture *texture = nullptr;
     SDL_Rect rectSource{0, 0, 0, 0};
     SDL_Rect rectTarget{0, 0, 0, 0};
 
 public:
-    Sprite::Sprite()
+    bool alive()
+    {
+        return active;
+    }
+
+    WY_Sprite()
     {
     }
 
-    Sprite::Sprite(SDL_Texture *t, int x, int y, int w, int h)
+    WY_Sprite(SDL_Texture *t, int x, int y, int w, int h)
     {
         texture = t;
         rectSource = {x, y, w, h};
     }
 
-    Sprite::~Sprite()
+    ~WY_Sprite()
     {
         texture = nullptr;
         delete &rectSource;
         delete &rectTarget;
     }
 
-    void render(SDL_Renderer *renderer, float pixelSize)
+    void draw(SDL_Renderer *renderer, int pixelSize)
     {
-        SDL_RenderCopy(renderer, texture, &rectSource, &rectTarget);
+        SDL_Rect scaledTarget = {
+            rectTarget.x * pixelSize,
+            rectTarget.y * pixelSize,
+            rectTarget.w * pixelSize,
+            rectTarget.h * pixelSize};
+        SDL_RenderCopy(renderer, texture, &rectSource, &scaledTarget);
+    }
+
+    void activate()
+    {
+        active = true;
+    }
+
+    void kill()
+    {
+        active = false;
     }
 };

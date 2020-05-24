@@ -27,7 +27,7 @@ SDL_Texture *loadPNG(SDL_Renderer *renderer, std::string path)
     return newTexture;
 }
 
-SDL_Texture *LoadBMP(SDL_Renderer *renderer, std::string path)
+SDL_Texture *loadBMP(SDL_Renderer *renderer, std::string path)
 {
     SDL_Surface *loadedSurface = SDL_LoadBMP(path.c_str());
     SDL_Texture *newTexture = NULL;

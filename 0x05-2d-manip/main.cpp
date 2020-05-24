@@ -29,11 +29,10 @@ private:
 
     bool loadMedia()
     {
-        //Loading success flag
         bool success = true;
 
         //Load default surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadPNG(renderer, "assets/press.png");
+        gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] = loadPNG(windowRenderer, "assets/press.png");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_DEFAULT] == NULL)
         {
             printf("Failed to load default image!\n");
@@ -41,7 +40,7 @@ private:
         }
 
         //Load up surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadPNG(renderer, "assets/up.png");
+        gKeyPressTextures[KEY_PRESS_SURFACE_UP] = loadPNG(windowRenderer, "assets/up.png");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_UP] == NULL)
         {
             printf("Failed to load up image!\n");
@@ -49,7 +48,7 @@ private:
         }
 
         //Load down surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadPNG(renderer, "assets/down.png");
+        gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] = loadPNG(windowRenderer, "assets/down.png");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_DOWN] == NULL)
         {
             printf("Failed to load down image!\n");
@@ -57,7 +56,7 @@ private:
         }
 
         //Load left surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadPNG(renderer, "assets/left.png");
+        gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] = loadPNG(windowRenderer, "assets/left.png");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_LEFT] == NULL)
         {
             printf("Failed to load left image!\n");
@@ -65,7 +64,7 @@ private:
         }
 
         //Load right surface
-        gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadPNG(renderer, "assets/right.png");
+        gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] = loadPNG(windowRenderer, "assets/right.png");
         if (gKeyPressTextures[KEY_PRESS_SURFACE_RIGHT] == NULL)
         {
             printf("Failed to load right image!\n");
@@ -80,7 +79,7 @@ public:
     {
     }
 
-    Game() : Wyngine("Wyngine", 640, 480, 2)
+    Game() : Wyngine("Wyngine", 640, 480, 4)
     {
         if (gameRunning)
         {
@@ -128,27 +127,11 @@ public:
                 }
             }
         }
+    }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
-
-        // Initialize texture pixels to a red opaque RGBA value
-        // unsigned char *bytes = nullptr;
-        // int pitch = 0; // row of pixels
-        // SDL_LockTexture(texture, NULL, reinterpret_cast<void **>(&bytes), &pitch);
-        // for (int y = 0; y < texH; y++)
-        // {
-        //     for (int x = 0; x < texW; x++)
-        //     {
-        //         unsigned char rgba[4] = {random(255), random(255), random(255), random(255)};
-        //         memcpy(&bytes[(y * texW + x) * sizeof(rgba)], rgba, sizeof(rgba));
-        //     }
-        // }
-        // SDL_UnlockTexture(texture);
-
-        // SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderCopy(renderer, gCurrentTexture, NULL, NULL);
-        SDL_RenderPresent(renderer);
+    void onDraw()
+    {
+        SDL_RenderCopy(windowRenderer, gCurrentTexture, NULL, NULL);
     }
 };
 
