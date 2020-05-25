@@ -27,7 +27,33 @@ class WY_MonoFont
         }
     }
 
+    int getAscii(std::string text, int index)
+    {
+        // mini-ascii offsets by first 32 unused glyphs
+        return (unsigned char)text[index] - 32;
+    }
+
 public:
+    int getFontSize()
+    {
+        return fontSize * pixelSize;
+    }
+
+    int getVPadding()
+    {
+        return vPadding * pixelSize;
+    }
+
+    int getBoundW()
+    {
+        return bound.w * pixelSize;
+    }
+
+    int getBoundH()
+    {
+        return bound.h * pixelSize;
+    }
+
     WY_MonoFont(SDL_Texture *t, int fs, int vp, int ps, SDL_Rect b)
     {
         texture = t;
@@ -56,6 +82,19 @@ public:
         delete &bound;
     }
 
+    // void printd(SDL_Renderer *renderer, int x, int y, std::string text)
+    // {
+    //     int rs = getFontSize();
+
+    //     for (int c = 0; c < text.length(); c++)
+    //     {
+    //         int ascii = (unsigned char)text[c];
+    //         printf("\nprint: %c (%d, %d)", text[c], c, ascii);
+    //         rDest = {(c * rs) % 320, (c * rs) / 320 * rs, rs, rs};
+    //         SDL_RenderCopy(renderer, texture, &rChars[ascii - 32], &rDest);
+    //     }
+    // }
+
     void print(SDL_Renderer *renderer, int x, int y, std::string text)
     {
         if (texture == nullptr)
@@ -63,9 +102,6 @@ public:
             printf("Font texture missing!\n");
             return;
         }
-
-        currX = bound.x;
-        currY = bound.y;
 
         /*
             get word length (until next space char)
@@ -77,36 +113,50 @@ public:
                     move to next line
         */
 
+        currX = x * pixelSize;
+        currY = y * pixelSize;
+        int fs = getFontSize();
         int cPos = 1;
+        int row = 0;
 
         for (int c = 0; c < text.length(); c++)
         {
-            while (text[cPos] != ' ' && text[cPos] != '\n' && cPos < text.length())
+            int ascii = getAscii(text, c);
+            int cPosAscii = getAscii(text, cPos);
+
+            while (cPosAscii != ' ' && cPosAscii != '\n' && cPos < text.length())
             {
                 cPos++;
+                cPosAscii = getAscii(text, cPos);
             }
 
-            currX = c * fontSize;
-            int currWidth = cPos * fontSize;
+            // TODO setup debugger!
+            // TODO this doesn't look right; doesn't consider x-origin
+            int currWidth = cPos * fs;
 
             // if bound width is zero, it means there's no bound
             // if first word OR width is less than bound width, draw!
-            if (bound.w == 0 || currX % bound.w == 0 || currWidth <= bound.w)
+            if (getBoundW() == 0 || currX % getBoundW() == 0 || currWidth <= getBoundW())
             {
                 // draw word
                 while (c < cPos)
                 {
-                    rDest = {currX, currY, fontSize * pixelSize, fontSize * pixelSize};
-                    SDL_RenderCopy(renderer, texture, &rChars[c], &rDest);
+                    currX = (x * pixelSize) + (c * fs);
+
+                    ascii = getAscii(text, c);
+                    rDest = {currX, currY, fs, fs};
+                    SDL_RenderCopy(renderer, texture, &rChars[ascii], &rDest);
+
                     c++;
                 }
             }
 
             // if width is more than bound width OR encountered newline, force to new line
-            if (bound.w > 0 && (currWidth > bound.w || text[cPos] == '\n'))
+            if (getBoundW() > 0 && (currWidth > getBoundW() || ascii == '\n'))
             {
-                currX = 0;
-                currY += (bound.h + vPadding);
+                row++;
+                currX = x * pixelSize;
+                currY = ((y * pixelSize) + (getBoundH() + getVPadding())) * row;
             }
 
             cPos++;

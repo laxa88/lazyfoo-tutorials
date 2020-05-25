@@ -66,7 +66,7 @@ public:
 
     void onDraw()
     {
-        // TODO draw text
+        wyFont->print(windowRenderer, 1, 1, "Hello world!\nNew line!");
     }
 };
 
