@@ -8,23 +8,22 @@
 #include "wyngine/keyboard.h"
 #include "wyngine/image.h"
 #include "wyngine/random.h"
+#include "wyngine/font.h"
 
 class Game : public Wyngine
 {
 private:
     SDL_Event windowEvent;
-    SDL_Texture *tSprite = NULL;
-
-    // TODO
-    // add animation logic for spritesheet
-    // publish new post
+    SDL_Texture *tFont;
+    WY_MonoFont *wyFont;
+    int pixelSize = 4;
 
     bool loadMedia()
     {
         bool success = true;
 
-        tSprite = loadPNG(windowRenderer, "assets/sprites.png");
-        if (tSprite == NULL)
+        tFont = loadPNG(windowRenderer, "assets/ascii-bnw.png");
+        if (tFont == NULL)
         {
             printf("Failed to load image!\n");
             success = false;
@@ -33,22 +32,18 @@ private:
         return success;
     }
 
-    void loadSprites()
+    bool createFont()
     {
-        addSprite(new WY_Sprite(tSprite, {0, 0, 50, 50}, {0, 0, 50, 50}), true);
-        addSprite(new WY_Sprite(tSprite, {50, 0, 50, 50}, {getScreenW() - 50, 0, 50, 50}), true);
-        addSprite(new WY_Sprite(tSprite, {0, 50, 50, 50}, {0, getScreenH() - 50, 50, 50}), true);
-        addSprite(new WY_Sprite(tSprite, {50, 50, 50, 50}, {getScreenW() - 50, getScreenH() - 50, 50, 50}), true);
+        wyFont = new WY_MonoFont(tFont, 8, 4, pixelSize, {10, 10});
+
+        return true;
     }
 
 public:
-    Game() : Wyngine("Wyngine", 640, 480, 4)
+    Game() : Wyngine("Wyngine", 640, 480, pixelSize)
     {
-        if (gameRunning)
-        {
-            loadMedia();
-            loadSprites();
-        }
+        gameRunning = gameRunning && loadMedia();
+        gameRunning = gameRunning && createFont();
     }
 
     void onUpdate()
@@ -69,6 +64,11 @@ public:
                 }
             }
         }
+    }
+
+    void onDraw()
+    {
+        // TODO draw text
     }
 };
 

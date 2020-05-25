@@ -8,6 +8,7 @@ class WY_MonoFont
 {
     SDL_Texture *texture = nullptr;
     SDL_Rect bound{0, 0, 0, 0};
+    SDL_Rect rDest{0, 0, 0, 0};
     SDL_Rect rChars[256];
     int fontSize;  // monospace fonts assumed to be equal w/h
     int vPadding;  // vertical padding between lines
@@ -77,7 +78,8 @@ public:
         */
 
         int cPos = 1;
-        for (int c = 0, c < text.length(); c++)
+
+        for (int c = 0; c < text.length(); c++)
         {
             while (text[cPos] != ' ' && text[cPos] != '\n' && cPos < text.length())
             {
@@ -87,19 +89,21 @@ public:
             currX = c * fontSize;
             int currWidth = cPos * fontSize;
 
+            // if bound width is zero, it means there's no bound
             // if first word OR width is less than bound width, draw!
-            if (currX % bound.w == 0 || currWidth <= bound.w)
+            if (bound.w == 0 || currX % bound.w == 0 || currWidth <= bound.w)
             {
                 // draw word
                 while (c < cPos)
                 {
-                    SDL_RenderCopy(renderer, texture, rChars[c], {currX, currY, fontSize * pixelSize, fontSize * pixelSize});
+                    rDest = {currX, currY, fontSize * pixelSize, fontSize * pixelSize};
+                    SDL_RenderCopy(renderer, texture, &rChars[c], &rDest);
                     c++;
                 }
             }
 
             // if width is more than bound width OR encountered newline, force to new line
-            if (currWidth > bound.w || text[cPos] == '\n')
+            if (bound.w > 0 && (currWidth > bound.w || text[cPos] == '\n'))
             {
                 currX = 0;
                 currY += (bound.h + vPadding);
