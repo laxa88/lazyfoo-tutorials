@@ -16,9 +16,8 @@ private:
     SDL_Event windowEvent;
     SDL_Texture *tFont;
     WY_MonoFont *wyFont;
-    int pixelSize = 4;
 
-    bool loadMedia()
+    void loadMedia()
     {
         bool success = true;
 
@@ -28,22 +27,21 @@ private:
             printf("Failed to load image!\n");
             success = false;
         }
-
-        return success;
     }
 
-    bool createFont()
+    void createFont()
     {
         wyFont = new WY_MonoFont(tFont, 8, 4, pixelSize, {10, 10});
-
-        return true;
     }
 
 public:
-    Game() : Wyngine("Wyngine", 640, 480, pixelSize)
+    Game(const char *title, int w, int h, int ps) : Wyngine(title, w, h, ps)
     {
-        gameRunning = gameRunning && loadMedia();
-        gameRunning = gameRunning && createFont();
+        if (gameRunning)
+        {
+            loadMedia();
+            createFont();
+        }
     }
 
     void onUpdate()
@@ -74,7 +72,7 @@ public:
 
 int main(int argc, char *args[])
 {
-    Game *game = new Game();
+    Game *game = new Game("0x06 font sprite", 640, 480, 4);
 
     game->run();
 
