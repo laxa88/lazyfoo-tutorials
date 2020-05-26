@@ -56,7 +56,7 @@ This project is to test that GDB (g++ debugger) works in VSCode, following tutor
       "program": "${fileDirname}\\bin\\${fileBasenameNoExtension}.exe", // make sure path is correct in order to target the built binary
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}\\bin", // make sure binary is run in the correct environment, i.e. the output path
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
