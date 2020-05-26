@@ -15,7 +15,9 @@
 - Use brew: `brew update` > `brew upgrade`
 - Install GCC: `brew install gcc`
 - Install SDL2 and take advantage of brew's default directory: `brew install sdl2`
-- Run `g++ main.cpp -o main -L/usr/local/lib -lSDL2`
+- For extensions: `brew install sdl2_image`
+- Try running: `g++ main.cpp -std=c++11 -o main -L/usr/local/lib -lSDL2 -lSDL2_image`
+- Note: The `-I/usr/local/include` is optional.
 
 Notes:
 
