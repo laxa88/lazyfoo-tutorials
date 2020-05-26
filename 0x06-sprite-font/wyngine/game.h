@@ -19,7 +19,6 @@ protected:
     int mGameH;  // actual game height
     int mGamePS; // pixel size
     bool mGameRunning;
-    double mAngle;
 
     SDL_Window *mWindow = NULL;
     SDL_Renderer *mRenderer = NULL;
@@ -48,7 +47,9 @@ protected:
             return false;
         }
 
-        mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
+        // https://stackoverflow.com/questions/18647592/sdl-render-texture-on-top-of-another-texture
+        mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_TARGETTEXTURE);
+
         SDL_SetRenderDrawColor(mRenderer, 0x00, 0xFF, 0x00, 0xFF);
 
         mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, mGameW, mGameH);
@@ -67,7 +68,6 @@ public:
         mGameW = w;
         mGameH = h;
         mGamePS = ps;
-        mAngle = 0;
 
         if (init())
         {
@@ -102,7 +102,9 @@ public:
     {
         // perform internal render here
 
-        // SDL_SetRenderTarget(mRenderer, mTexture);
+        SDL_SetRenderTarget(mRenderer, mTexture);
+
+        // Clear with magenta so we know this works
         SDL_SetRenderDrawColor(mRenderer, 0xFF, 0x00, 0xFF, 0xFF);
         SDL_RenderClear(mRenderer);
 
@@ -115,18 +117,14 @@ public:
 
         onRender();
 
-        SDL_Rect src{0, 0, mGameW, mGameH};
-        SDL_Rect dest{100, 100, 200, 100};
-        SDL_Point center{100, 50};
-        SDL_RenderCopyEx(mRenderer, mTexture, &src, &dest, mAngle, &center, SDL_FLIP_NONE);
-        // SDL_SetRenderTarget(mRenderer, NULL);
-        SDL_RenderPresent(mRenderer);
+        // Unset mTexture as render target before rendering mTexture to mRenderer
+        SDL_SetRenderTarget(mRenderer, NULL);
 
-        mAngle += 0.01;
-        if (mAngle > 360)
-        {
-            mAngle = 0;
-        }
+        // Renders mTexture to fit to window size; Smaller textures will result in retro feel
+        SDL_RenderCopy(mRenderer, mTexture, NULL, NULL);
+
+        // Flush to screen
+        SDL_RenderPresent(mRenderer);
     }
 
     void gameLoop()
