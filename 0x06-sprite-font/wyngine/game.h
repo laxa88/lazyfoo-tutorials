@@ -19,6 +19,7 @@ protected:
     int mGameH;  // actual game height
     int mGamePS; // pixel size
     bool mGameRunning;
+    double mAngle;
 
     SDL_Window *mWindow = NULL;
     SDL_Renderer *mRenderer = NULL;
@@ -50,7 +51,7 @@ protected:
         mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
         SDL_SetRenderDrawColor(mRenderer, 0x00, 0xFF, 0x00, 0xFF);
 
-        mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, mGameW, mGameH);
+        mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, mGameW, mGameH);
 
         return true;
     }
@@ -66,6 +67,7 @@ public:
         mGameW = w;
         mGameH = h;
         mGamePS = ps;
+        mAngle = 0;
 
         if (init())
         {
@@ -101,6 +103,7 @@ public:
         // perform internal render here
 
         // SDL_SetRenderTarget(mRenderer, mTexture);
+        SDL_SetRenderDrawColor(mRenderer, 0xFF, 0x00, 0xFF, 0xFF);
         SDL_RenderClear(mRenderer);
 
         int len = spritePool.size();
@@ -112,8 +115,18 @@ public:
 
         onRender();
 
+        SDL_Rect src{0, 0, mGameW, mGameH};
+        SDL_Rect dest{100, 100, 200, 100};
+        SDL_Point center{100, 50};
+        SDL_RenderCopyEx(mRenderer, mTexture, &src, &dest, mAngle, &center, SDL_FLIP_NONE);
         // SDL_SetRenderTarget(mRenderer, NULL);
         SDL_RenderPresent(mRenderer);
+
+        mAngle += 0.01;
+        if (mAngle > 360)
+        {
+            mAngle = 0;
+        }
     }
 
     void gameLoop()
