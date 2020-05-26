@@ -28,7 +28,7 @@ This project is to test that GDB (g++ debugger) works in VSCode, following tutor
         "-g", // adds debugger info to the binary, important!
         "${file}",
         "-o",
-        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+        "${fileDirname}\\bin\\${fileBasenameNoExtension}.exe"
       ],
       "options": {
         "cwd": "C:\\MinGW\\bin"
@@ -53,7 +53,7 @@ This project is to test that GDB (g++ debugger) works in VSCode, following tutor
       "name": "g++.exe build and debug active file",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe", // make sure path is correct in order to target the built binary
+      "program": "${fileDirname}\\bin\\${fileBasenameNoExtension}.exe", // make sure path is correct in order to target the built binary
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -68,12 +68,14 @@ This project is to test that GDB (g++ debugger) works in VSCode, following tutor
           "ignoreFailures": true
         }
       ],
-      "preLaunchTask": "WY g++" // must match `label` in `tasks.json`
+      "preLaunchTask": "WY make" // must match `label` in `tasks.json`
     }
   ]
 }
 ```
 
-3. Press `F5` within the entry file, e.g. `main.cpp`, to run the `launch.json` (which will run the `preLaunchTask` to build the binary before launching)
+3. Add breakpoints in the code
 
-4. Alternatively, press `CTRL + SHIFT + B` to just run `tasks.json`, to make sure the build works.
+4. Press `F5` within the entry file, e.g. `main.cpp`, to run the `launch.json` (which will run the `preLaunchTask` to build the binary before launching)
+
+5. Alternatively, press `CTRL + SHIFT + B` to just run `tasks.json`, to make sure the build works.
