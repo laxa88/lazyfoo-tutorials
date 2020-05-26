@@ -6,7 +6,7 @@ OBJ_NAME = bin\main
 
 #This is the target that compiles our executable
 all : $(OBJS)
-	g++ $(OBJS) \
+	g++ -g $(OBJS) \
 	-IC:\wy-dev\sdl2-mingw-32\include \
 	-IC:\wy-dev\sdl2-mingw-32\include\SDL2 \
 	-IC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\include \
