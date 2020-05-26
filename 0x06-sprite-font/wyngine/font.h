@@ -130,7 +130,6 @@ public:
                 cPosAscii = getAscii(text, cPos);
             }
 
-            // TODO setup debugger!
             // TODO this doesn't look right; doesn't consider x-origin
             int currWidth = cPos * fs;
 
