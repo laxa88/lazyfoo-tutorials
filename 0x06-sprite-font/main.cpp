@@ -72,7 +72,7 @@ public:
 
 int main(int argc, char *args[])
 {
-    Game *game = new Game("0x06 font sprite", 320, 240, 2);
+    Game *game = new Game("0x06 font sprite", 256, 224, 3);
 
     game->run();
 
