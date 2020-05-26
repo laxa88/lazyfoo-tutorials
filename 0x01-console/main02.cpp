@@ -253,7 +253,7 @@ int main()
         }
         float fFps = fTotalFps / (float)fpses.size();
 
-        swprintf(screen, 60, L"LAKSAPEDIA.COM X=%3.1f, Y=%3.1f, A=%3.1f FPS=%3.1f", fPlayerX, fPlayerY, fPlayerA, fFps);
+        swprintf(screen, (const wchar_t *)60, L"LAKSAPEDIA.COM X=%3.1f, Y=%3.1f, A=%3.1f FPS=%3.1f", fPlayerX, fPlayerY, fPlayerA, fFps);
 
         for (int nx = 0; nx < nMapWidth; nx++)
         {
