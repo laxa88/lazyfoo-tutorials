@@ -2,11 +2,11 @@
 OBJS = main.cpp
 
 #OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = main
+OBJ_NAME = bin\main
 
 #This is the target that compiles our executable
 all : $(OBJS)
-	g++ $(OBJS) \
+	g++ -g $(OBJS) \
 	-IC:\wy-dev\sdl2-mingw-32\include \
 	-LC:\wy-dev\sdl2-mingw-32\lib \
 	-lmingw32 -lSDL2main -lSDL2 \
