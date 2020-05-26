@@ -3,22 +3,18 @@
 
 class WY_Sprite
 {
-    bool active = false;
-    int frame = 0;
-    SDL_Texture *texture = nullptr;
-    SDL_Rect rectSource{0, 0, 0, 0};
-    SDL_Rect rectTarget{0, 0, 0, 0};
-    SDL_Rect rectTargetScaled{0, 0, 0, 0};
+    bool mActive = false;
+    SDL_Texture *mTexture = nullptr;
+    SDL_Rect mRectSource{0, 0, 0, 0};
+    SDL_Rect mRectTarget{0, 0, 0, 0};
 
 public:
     bool getActive()
     {
-        return active;
+        return mActive;
     }
 
-    WY_Sprite()
-    {
-    }
+    WY_Sprite() {}
 
     WY_Sprite(SDL_Texture *t, SDL_Rect rs, SDL_Rect rt)
     {
@@ -27,52 +23,39 @@ public:
 
     ~WY_Sprite()
     {
-        texture = nullptr;
-        delete &rectSource;
-        delete &rectTarget;
+        mTexture = nullptr;
+        delete &mRectSource;
+        delete &mRectTarget;
     }
 
     void init(SDL_Texture *t, SDL_Rect rs, SDL_Rect rt)
     {
-        texture = t;
-
-        // delete &rSource;
-        rectSource = rs;
-
-        // delete &rTarget;
-        rectTarget = rt;
+        mTexture = t;
+        mRectSource = rs;
+        mRectTarget = rt;
     }
 
-    void draw(SDL_Renderer *renderer, int pixelSize, int screenW, int screenH)
+    void render(SDL_Renderer *renderer, int gameW, int gameH)
     {
-        rectTargetScaled.x = rectTarget.x * pixelSize;
-        rectTargetScaled.y = rectTarget.y * pixelSize;
-        rectTargetScaled.w = rectTarget.w * pixelSize;
-        rectTargetScaled.h = rectTarget.h * pixelSize;
-
-        // printf("\nSource %d %d %d %d", rectSource.x, rectSource.y, rectSource.w, rectSource.w);
-        // printf("\nTarget %d %d %d %d", rectTargetScaled.x, rectTargetScaled.y, rectTargetScaled.w, rectTargetScaled.w);
-
         // don't render if outside of screen.
-        // TODO handle rotated/scaled sprites
-        if (rectTargetScaled.x + rectTargetScaled.w < 0 ||
-            rectTargetScaled.y + rectTargetScaled.h < 0 ||
-            rectTargetScaled.x > screenW ||
-            rectTargetScaled.y > screenH)
+        if (mRectTarget.x + mRectTarget.w < 0 ||
+            mRectTarget.y + mRectTarget.h < 0 ||
+            mRectTarget.x > gameW ||
+            mRectTarget.y > gameH)
         {
             return;
         }
 
-        SDL_RenderCopy(renderer, texture, &rectSource, &rectTargetScaled);
+        SDL_RenderCopy(renderer, mTexture, &mRectSource, &mRectTarget);
     }
 
     void activate()
     {
-        active = true;
+        mActive = true;
     }
 
     void kill()
     {
-        active = false;
+        mActive = false;
     }
 };

@@ -6,24 +6,27 @@
 
 class WY_MonoFont
 {
-    SDL_Texture *texture = nullptr;
-    SDL_Rect bound{0, 0, 0, 0};
-    SDL_Rect rDest{0, 0, 0, 0};
-    SDL_Rect rChars[256];
-    int fontSize;  // monospace fonts assumed to be equal w/h
-    int vPadding;  // vertical padding between lines
-    int pixelSize; // screen resolution
-    int currX, currY;
-    int texW, texH;
+    SDL_Texture *mTexture = nullptr;
+    SDL_Rect mBound{0, 0, 0, 0};
+    SDL_Rect mDest{0, 0, 0, 0};
+    SDL_Rect mChars[256];
+    int mFontSize; // monospace fonts assumed to be equal w/h
+    int mPaddingV; // vertical padding between lines
+    int mCurrX, mCurrY;
 
     void buildFonts()
     {
-        SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
+        int texW, texH;
+        SDL_QueryTexture(mTexture, NULL, NULL, &texW, &texH);
 
         // Assumes font spritesheet uses ascii layout
         for (int i = 0; i < 256; i++)
         {
-            rChars[i] = {(i * fontSize) % texW, (i * fontSize / texW) * fontSize, fontSize, fontSize};
+            mChars[i] = {
+                (i * mFontSize) % texW,
+                (i * mFontSize / texW) * mFontSize,
+                mFontSize,
+                mFontSize};
         }
     }
 
@@ -34,52 +37,46 @@ class WY_MonoFont
     }
 
 public:
-    int getFontSize()
+    // int getFontSize()
+    // {
+    //     return fontSize * pixelSize;
+    // }
+
+    // int getVPadding()
+    // {
+    //     return vPadding * pixelSize;
+    // }
+
+    // int getBoundW()
+    // {
+    //     return bound.w * pixelSize;
+    // }
+
+    // int getBoundH()
+    // {
+    //     return bound.h * pixelSize;
+    // }
+
+    WY_MonoFont(SDL_Texture *t, int fs, int vp, SDL_Rect b)
     {
-        return fontSize * pixelSize;
-    }
-
-    int getVPadding()
-    {
-        return vPadding * pixelSize;
-    }
-
-    int getBoundW()
-    {
-        return bound.w * pixelSize;
-    }
-
-    int getBoundH()
-    {
-        return bound.h * pixelSize;
-    }
-
-    WY_MonoFont(SDL_Texture *t, int fs, int vp, int ps, SDL_Rect b)
-    {
-        texture = t;
-        fontSize = fs;
-        vPadding = vp;
-        pixelSize = ps;
-
-        if (&bound != nullptr)
-        {
-            delete &bound;
-        }
-
-        bound = b;
+        mTexture = t;
+        mFontSize = fs;
+        mPaddingV = vp;
+        mBound = b;
 
         buildFonts();
     }
 
-    WY_MonoFont(SDL_Texture *t, int fs, int vp, int ps) : WY_MonoFont(t, fs, vp, ps, {0, 0, 0, 0}) {}
-    WY_MonoFont(SDL_Texture *t, int fs, int vp) : WY_MonoFont(t, fs, vp, 1, {0, 0, 0, 0}) {}
-    WY_MonoFont(SDL_Texture *t, int fs) : WY_MonoFont(t, fs, 4, 1, {0, 0, 0, 0}) {}
-    WY_MonoFont(SDL_Texture *t) : WY_MonoFont(t, 8, 4, 1, {0, 0, 0, 0}) {}
+    WY_MonoFont(SDL_Texture *t, int fs, int vp) : WY_MonoFont(t, fs, vp, {0, 0, 0, 0}) {}
+    WY_MonoFont(SDL_Texture *t, int fs) : WY_MonoFont(t, fs, 4, {0, 0, 0, 0}) {}
+    WY_MonoFont(SDL_Texture *t) : WY_MonoFont(t, 8, 4, {0, 0, 0, 0}) {}
 
     ~WY_MonoFont()
     {
-        texture = nullptr;
-        delete &bound;
+        mTexture = nullptr;
+        delete &mBound;
+        delete &mDest;
+        delete &mChars;
     }
 
     // void printd(SDL_Renderer *renderer, int x, int y, std::string text)
@@ -97,7 +94,7 @@ public:
 
     void print(SDL_Renderer *renderer, int x, int y, std::string text)
     {
-        if (texture == nullptr)
+        if (mTexture == nullptr)
         {
             printf("Font texture missing!\n");
             return;
@@ -113,9 +110,8 @@ public:
                     move to next line
         */
 
-        currX = x * pixelSize;
-        currY = y * pixelSize;
-        int fs = getFontSize();
+        mCurrX = x;
+        mCurrY = y;
         int cPos = 1;
         int row = 0;
 
@@ -131,31 +127,31 @@ public:
             }
 
             // TODO this doesn't look right; doesn't consider x-origin
-            int currWidth = cPos * fs;
+            int currWidth = cPos * mFontSize;
 
             // if bound width is zero, it means there's no bound
             // if first word OR width is less than bound width, draw!
-            if (getBoundW() == 0 || currX % getBoundW() == 0 || currWidth <= getBoundW())
+            if (mBound.w == 0 || mCurrX % mBound.w == 0 || currWidth <= mBound.w)
             {
                 // draw word
                 while (c < cPos)
                 {
-                    currX = (x * pixelSize) + (c * fs);
+                    mCurrX = x + (c * mFontSize);
 
                     ascii = getAscii(text, c);
-                    rDest = {currX, currY, fs, fs};
-                    SDL_RenderCopy(renderer, texture, &rChars[ascii], &rDest);
+                    mDest = {mCurrX, mCurrY, mFontSize, mFontSize};
+                    SDL_RenderCopy(renderer, mTexture, &mChars[ascii], &mDest);
 
                     c++;
                 }
             }
 
             // if width is more than bound width OR encountered newline, force to new line
-            if (getBoundW() > 0 && (currWidth > getBoundW() || ascii == '\n'))
+            if (mBound.w > 0 && (currWidth > mBound.w || ascii == '\n'))
             {
                 row++;
-                currX = x * pixelSize;
-                currY = ((y * pixelSize) + (getBoundH() + getVPadding())) * row;
+                mCurrX = x;
+                mCurrY = (y + (mBound.h + mPaddingV)) * row;
             }
 
             cPos++;

@@ -21,7 +21,7 @@ private:
     {
         bool success = true;
 
-        tFont = loadPNG(windowRenderer, "assets/ascii-bnw.png");
+        tFont = loadPNG(mRenderer, "assets/ascii-bnw.png");
         if (tFont == NULL)
         {
             printf("Failed to load image!\n");
@@ -31,13 +31,13 @@ private:
 
     void createFont()
     {
-        wyFont = new WY_MonoFont(tFont, 8, 4, pixelSize, {10, 10});
+        wyFont = new WY_MonoFont(tFont, 8, 4, {10, 10});
     }
 
 public:
     Game(const char *title, int w, int h, int ps) : Wyngine(title, w, h, ps)
     {
-        if (gameRunning)
+        if (mGameRunning)
         {
             loadMedia();
             createFont();
@@ -50,29 +50,29 @@ public:
         {
             if (SDL_QUIT == windowEvent.type)
             {
-                gameRunning = false;
+                mGameRunning = false;
             }
             else if (windowEvent.type == SDL_KEYDOWN)
             {
                 switch (windowEvent.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
-                    gameRunning = false;
+                    mGameRunning = false;
                     break;
                 }
             }
         }
     }
 
-    void onDraw()
+    void onRender()
     {
-        wyFont->print(windowRenderer, 1, 1, "Hello world!\nNew line!");
+        wyFont->print(mRenderer, 1, 1, "Hello world!\nNew line!");
     }
 };
 
 int main(int argc, char *args[])
 {
-    Game *game = new Game("0x06 font sprite", 640, 480, 4);
+    Game *game = new Game("0x06 font sprite", 320, 240, 2);
 
     game->run();
 

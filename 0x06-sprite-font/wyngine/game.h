@@ -13,7 +13,18 @@ void emscriptenLoop(void *arg);
 
 class Wyngine
 {
-private:
+protected:
+    const char *windowTitle;
+    int mGameW;  // actual game width
+    int mGameH;  // actual game height
+    int mGamePS; // pixel size
+    bool mGameRunning;
+
+    SDL_Window *mWindow = NULL;
+    SDL_Renderer *mRenderer = NULL;
+    SDL_Texture *mTexture = NULL;
+    std::vector<WY_Sprite *> spritePool;
+
     bool init()
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -29,73 +40,45 @@ private:
             return false;
         }
 
-        window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowW, windowH, SDL_WINDOW_SHOWN);
-        if (window == NULL)
+        mWindow = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, mGameW * mGamePS, mGameH * mGamePS, SDL_WINDOW_SHOWN);
+        if (mWindow == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             return false;
         }
 
-        windowRenderer = SDL_CreateRenderer(window, -1, 0);
-        SDL_SetRenderDrawColor(windowRenderer, 0xCC, 0xCC, 0xCC, 0xCC);
+        mRenderer = SDL_CreateRenderer(mWindow, -1, 0);
+        SDL_SetRenderDrawColor(mRenderer, 0x00, 0xFF, 0x00, 0xFF);
 
-        screenTexture = SDL_CreateTexture(windowRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, texW, texH);
+        mTexture = SDL_CreateTexture(mRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, mGameW, mGameH);
 
         return true;
     }
 
-protected:
-    const char *windowTitle;
-    int windowW;
-    int windowH;
-    int pixelSize;
-    int texW;
-    int texH;
-    bool gameRunning;
-
-    SDL_Window *window = NULL;
-    SDL_Renderer *windowRenderer = NULL;
-    SDL_Texture *screenTexture = NULL; // unused; reserve for camera using SDL_RENDERER_TARGETTEXTURE
-    std::vector<WY_Sprite *> spritePool;
-
     virtual void onUpdate() {}
 
-    virtual void onDraw() {}
+    virtual void onRender() {}
 
 public:
-    int getScreenW()
-    {
-        return windowW / pixelSize;
-    }
-
-    int getScreenH()
-    {
-        return windowH / pixelSize;
-    }
-
-    Wyngine() : Wyngine("Wyngine", 640, 480, 1)
-    {
-    }
-
     Wyngine(const char *title, int w, int h, int ps)
     {
         windowTitle = title;
-        windowW = w;
-        windowH = h;
-        pixelSize = ps;
-        texW = w / ps;
-        texH = h / ps;
+        mGameW = w;
+        mGameH = h;
+        mGamePS = ps;
 
         if (init())
         {
-            gameRunning = true;
+            mGameRunning = true;
         }
     }
 
+    Wyngine() : Wyngine("Wyngine", 640, 480, 1) {}
+
     ~Wyngine()
     {
-        SDL_DestroyWindow(window);
-        window = NULL;
+        SDL_DestroyWindow(mWindow);
+        mWindow = NULL;
 
         for (int i = 0; i < spritePool.size(); i++)
         {
@@ -113,27 +96,30 @@ public:
         onUpdate();
     }
 
-    void draw()
+    void render()
     {
-        // perform internal draw here
-        SDL_RenderClear(windowRenderer);
+        // perform internal render here
+
+        // SDL_SetRenderTarget(mRenderer, mTexture);
+        SDL_RenderClear(mRenderer);
 
         int len = spritePool.size();
         for (int i = 0; i < len; i++)
         {
             WY_Sprite *sprite = spritePool.at(i);
-            sprite->draw(windowRenderer, pixelSize, windowW, windowH);
+            sprite->render(mRenderer, mGameW, mGameH);
         }
 
-        onDraw();
+        onRender();
 
-        SDL_RenderPresent(windowRenderer);
+        // SDL_SetRenderTarget(mRenderer, NULL);
+        SDL_RenderPresent(mRenderer);
     }
 
     void gameLoop()
     {
         update();
-        draw();
+        render();
     }
 
     // Entry point
@@ -142,7 +128,7 @@ public:
 #ifdef __EMSCRIPTEN__
         emscripten_set_main_loop_arg(emscriptenLoop, this, 0, 1);
 #else
-        while (gameRunning)
+        while (mGameRunning)
         {
             gameLoop();
         }
