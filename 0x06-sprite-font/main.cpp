@@ -31,7 +31,8 @@ private:
 
     void createFont()
     {
-        mFont = new WY_MonoFont(mFontImage->texture, 8, 4, {10, 10});
+        mFont = new WY_MonoFont(mFontImage->texture, 8, 4, {10, 10, 120, 50});
+        mFont->setDebug(true);
     }
 
 public:
@@ -66,7 +67,7 @@ public:
 
     void onRender()
     {
-        mFont->print(mRenderer, 1, 1, "Hello world!\nNew line!");
+        mFont->print(mRenderer, "Hello wrapped world!\n\nNew line!");
     }
 };
 

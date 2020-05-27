@@ -13,6 +13,7 @@ class WY_MonoFont
     int mFontSize; // monospace fonts assumed to be equal w/h
     int mPaddingV; // vertical padding between lines
     int mCurrX, mCurrY;
+    bool mDebug;
 
     void buildFonts()
     {
@@ -30,32 +31,22 @@ class WY_MonoFont
         }
     }
 
-    int getAscii(std::string text, int index)
+    int getFullAscii(std::string text, int index)
+    {
+        return (unsigned char)text[index];
+    }
+
+    int getMiniAscii(std::string text, int index)
     {
         // mini-ascii offsets by first 32 unused glyphs
         return (unsigned char)text[index] - 32;
     }
 
 public:
-    // int getFontSize()
-    // {
-    //     return fontSize * pixelSize;
-    // }
-
-    // int getVPadding()
-    // {
-    //     return vPadding * pixelSize;
-    // }
-
-    // int getBoundW()
-    // {
-    //     return bound.w * pixelSize;
-    // }
-
-    // int getBoundH()
-    // {
-    //     return bound.h * pixelSize;
-    // }
+    void setDebug(bool flag)
+    {
+        mDebug = flag;
+    }
 
     WY_MonoFont(SDL_Texture *t, int fs, int vp, SDL_Rect b)
     {
@@ -63,6 +54,7 @@ public:
         mFontSize = fs;
         mPaddingV = vp;
         mBound = b;
+        mDebug = false;
 
         buildFonts();
     }
@@ -79,25 +71,18 @@ public:
         delete &mChars;
     }
 
-    // void printd(SDL_Renderer *renderer, int x, int y, std::string text)
-    // {
-    //     int rs = getFontSize();
-
-    //     for (int c = 0; c < text.length(); c++)
-    //     {
-    //         int ascii = (unsigned char)text[c];
-    //         printf("\nprint: %c (%d, %d)", text[c], c, ascii);
-    //         rDest = {(c * rs) % 320, (c * rs) / 320 * rs, rs, rs};
-    //         SDL_RenderCopy(renderer, texture, &rChars[ascii - 32], &rDest);
-    //     }
-    // }
-
-    void print(SDL_Renderer *renderer, int x, int y, std::string text)
+    void print(SDL_Renderer *renderer, std::string text)
     {
         if (mTexture == nullptr)
         {
             printf("Font texture missing!\n");
             return;
+        }
+
+        if (mDebug)
+        {
+            SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF); // green
+            SDL_RenderDrawRect(renderer, &mBound);
         }
 
         /*
@@ -110,51 +95,29 @@ public:
                     move to next line
         */
 
-        mCurrX = x;
-        mCurrY = y;
-        int cPos = 1;
-        int row = 0;
+        mCurrX = mBound.x;
+        mCurrY = mBound.y;
 
         for (int c = 0; c < text.length(); c++)
         {
-            int ascii = getAscii(text, c);
-            int cPosAscii = getAscii(text, cPos);
-
-            while (cPosAscii != ' ' && cPosAscii != '\n' && cPos < text.length())
+            int fullAscii = getFullAscii(text, c);
+            while (fullAscii == '\n')
             {
-                cPos++;
-                cPosAscii = getAscii(text, cPos);
+                c++;
+                mCurrY += (mPaddingV + mFontSize);
+                mCurrX = mBound.x;
+
+                fullAscii = getFullAscii(text, c);
             }
 
-            // TODO this doesn't look right; doesn't consider x-origin
-            int currWidth = cPos * mFontSize;
+            // int fullAscii = getFullAscii(text, c);
+            // printf("\n#%d : %c = %d, %d", c, fullAscii, mCurrX, mCurrY);
 
-            // if bound width is zero, it means there's no bound
-            // if first word OR width is less than bound width, draw!
-            if (mBound.w == 0 || mCurrX % mBound.w == 0 || currWidth <= mBound.w)
-            {
-                // draw word
-                while (c < cPos)
-                {
-                    mCurrX = x + (c * mFontSize);
+            int miniAscii = getMiniAscii(text, c);
+            mDest = {mCurrX, mCurrY, mFontSize, mFontSize};
+            SDL_RenderCopy(renderer, mTexture, &mChars[miniAscii], &mDest);
 
-                    ascii = getAscii(text, c);
-                    mDest = {mCurrX, mCurrY, mFontSize, mFontSize};
-                    SDL_RenderCopy(renderer, mTexture, &mChars[ascii], &mDest);
-
-                    c++;
-                }
-            }
-
-            // if width is more than bound width OR encountered newline, force to new line
-            if (mBound.w > 0 && (currWidth > mBound.w || ascii == '\n'))
-            {
-                row++;
-                mCurrX = x;
-                mCurrY = (y + (mBound.h + mPaddingV)) * row;
-            }
-
-            cPos++;
+            mCurrX += mFontSize;
         }
 
         // IMPROVEMENTS
