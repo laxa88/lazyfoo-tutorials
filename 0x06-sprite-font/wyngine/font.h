@@ -33,11 +33,21 @@ class WY_MonoFont
 
     int getFullAscii(std::string text, int index)
     {
+        if (index < 0 || index >= text.length())
+        {
+            return (unsigned char)' ';
+        }
+
         return (unsigned char)text[index];
     }
 
     int getMiniAscii(std::string text, int index)
     {
+        if (index < 0 || index >= text.length())
+        {
+            return (unsigned char)' ';
+        }
+
         // mini-ascii offsets by first 32 unused glyphs
         return (unsigned char)text[index] - 32;
     }
@@ -100,14 +110,38 @@ public:
 
         for (int c = 0; c < text.length(); c++)
         {
+            // pre-trim whitespaces from first word in the line
             int fullAscii = getFullAscii(text, c);
-            while (fullAscii == '\n')
+            while (mCurrX == mBound.x && fullAscii == ' ')
             {
                 c++;
-                mCurrY += (mPaddingV + mFontSize);
-                mCurrX = mBound.x;
-
                 fullAscii = getFullAscii(text, c);
+            }
+
+            // if we encounter a linebreak, break and start over
+            if (fullAscii == '\n')
+            {
+                mCurrX = mBound.x;
+                mCurrY += (mPaddingV + mFontSize);
+                continue;
+            }
+
+            // get end index of word
+            int endPos = c + 1;
+            int endPosFullAscii = getFullAscii(text, endPos);
+            while (endPosFullAscii != ' ' && endPosFullAscii != '\n')
+            {
+                endPos++;
+                endPosFullAscii = getFullAscii(text, endPos);
+            }
+            int currFullWidth = mCurrX + ((endPos - c) * mFontSize);
+
+            // if word is not first in line and exceeds bound width, break to new line
+            if (mCurrX != mBound.x && currFullWidth > mBound.x + mBound.w)
+            {
+                mCurrX = mBound.x;
+                mCurrY += (mPaddingV + mFontSize);
+                continue;
             }
 
             // int fullAscii = getFullAscii(text, c);
