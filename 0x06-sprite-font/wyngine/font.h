@@ -95,16 +95,6 @@ public:
             SDL_RenderDrawRect(renderer, &mBound);
         }
 
-        /*
-            get word length (until next space char)
-                if first word in line
-                    print word regardless
-                else if word does not exceed bound
-                    print word
-                else (word exceeds bound)
-                    move to next line
-        */
-
         mCurrX = mBound.x;
         mCurrY = mBound.y;
 
@@ -144,14 +134,16 @@ public:
                 continue;
             }
 
-            // int fullAscii = getFullAscii(text, c);
-            // printf("\n#%d : %c = %d, %d", c, fullAscii, mCurrX, mCurrY);
+            for (; c < endPos; c++)
+            {
+                int miniAscii = getMiniAscii(text, c);
+                mDest = {mCurrX, mCurrY, mFontSize, mFontSize};
+                SDL_RenderCopy(renderer, mTexture, &mChars[miniAscii], &mDest);
 
-            int miniAscii = getMiniAscii(text, c);
-            mDest = {mCurrX, mCurrY, mFontSize, mFontSize};
-            SDL_RenderCopy(renderer, mTexture, &mChars[miniAscii], &mDest);
+                mCurrX += mFontSize;
+            }
 
-            mCurrX += mFontSize;
+            c--;
         }
 
         // IMPROVEMENTS
