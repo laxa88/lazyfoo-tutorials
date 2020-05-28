@@ -88,7 +88,7 @@ public:
         mTexture = nullptr;
         delete &mBound;
         delete &mDest;
-        delete &mChars;
+        delete[] & mChars;
     }
 
     void print(SDL_Renderer *renderer, std::string text)
