@@ -53,6 +53,16 @@ class WY_MonoFont
     }
 
 public:
+    int getW()
+    {
+        return mBound.w;
+    }
+
+    void setW(int w)
+    {
+        mBound.w = w;
+    }
+
     void setDebug(bool flag)
     {
         mDebug = flag;

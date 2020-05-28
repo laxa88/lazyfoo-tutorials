@@ -105,7 +105,7 @@ public:
         SDL_SetRenderTarget(mRenderer, mTexture);
 
         // Clear with magenta so we know this works
-        SDL_SetRenderDrawColor(mRenderer, 0xFF, 0x00, 0xFF, 0xFF);
+        SDL_SetRenderDrawColor(mRenderer, 0xEE, 0xEE, 0xEE, 0xFF);
         SDL_RenderClear(mRenderer);
 
         int len = spritePool.size();

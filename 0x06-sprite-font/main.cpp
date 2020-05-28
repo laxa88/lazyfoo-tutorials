@@ -31,7 +31,7 @@ private:
 
     void createFont()
     {
-        mFont = new WY_MonoFont(mFontImage->texture, 8, 4, {10, 10, 120, 50});
+        mFont = new WY_MonoFont(mFontImage->texture, 8, 4, {10, 10, 80, 50});
         mFont->setDebug(true);
     }
 
@@ -59,6 +59,14 @@ public:
                 {
                 case SDLK_ESCAPE:
                     mGameRunning = false;
+                    break;
+
+                case SDLK_RIGHT:
+                    mFont->setW(mFont->getW() + 5);
+                    break;
+
+                case SDLK_LEFT:
+                    mFont->setW(mFont->getW() - 5);
                     break;
                 }
             }
