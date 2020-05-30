@@ -57,8 +57,6 @@ protected:
         return true;
     }
 
-    virtual void onBeforeRun() {}
-
     virtual void onUpdate() {}
 
     virtual void onRender() {}
@@ -91,11 +89,6 @@ public:
         spritePool.clear();
 
         SDL_Quit();
-    }
-
-    void beforeRun()
-    {
-        onBeforeRun();
     }
 
     void update()
@@ -143,8 +136,6 @@ public:
     // Entry point
     void run()
     {
-        beforeRun();
-
 #ifdef __EMSCRIPTEN__
         emscripten_set_main_loop_arg(emscriptenLoop, this, 0, 1);
 #else
