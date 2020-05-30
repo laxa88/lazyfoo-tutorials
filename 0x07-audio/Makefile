@@ -20,7 +20,7 @@ all : $(OBJS)
 
 # Sample C code that works: https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
 # all : main.c
-# 	gcc main.c -ggdb3 -O3 -std=c99 \
+# 	gcc main.c -g -ggdb3 -O3 -std=c99 \
 # 	-Wall -Wextra -pedantic \
 # 	-IC:\wy-dev\sdl2-mingw-32\include \
 # 	-LC:\wy-dev\sdl2-mingw-32\lib \
