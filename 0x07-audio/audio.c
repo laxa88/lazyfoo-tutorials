@@ -1,17 +1,21 @@
 // ref: Hands-on Game Development with Web Assembly by Rick Battagline
 
 #include <SDL2/SDL.h>
-#include <emscripten.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
-#define LASER "/assets/laser.wav"
-#define EXPLOSION "/assets/explosion.wav"
+#define LASER "assets/laser.wav"
+#define EXPLOSION "assets/explosion.wav"
 
 SDL_AudioDeviceID device_id;
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Event event;
+bool gameRunning = true;
 
 struct audio_clip
 {
@@ -48,6 +52,9 @@ void input_loop()
         {
             switch (event.key.keysym.sym)
             {
+            case SDLK_ESCAPE:
+                gameRunning = false;
+                break;
             case SDLK_1:
                 printf("key 1 release\n");
                 play_audio(&laser_snd);
@@ -64,6 +71,7 @@ void input_loop()
 
 int main(int argc, char *argv[])
 {
+
     if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1))
     {
         printf("Could not init SDL: %s\n", SDL_GetError());
@@ -84,7 +92,14 @@ int main(int argc, char *argv[])
 
     SDL_PauseAudioDevice(device_id, 0);
 
+#ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(input_loop, 0, 1);
+#else
+    while (gameRunning)
+    {
+        input_loop();
+    }
+#endif
 
     return 1;
 }

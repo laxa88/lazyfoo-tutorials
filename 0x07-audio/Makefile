@@ -1,6 +1,6 @@
 # Note: Don't optimize with -O when debugging; It screws breakpoints
-all : main2.cpp
-	g++ -g main2.cpp \
+all : audio.c
+	gcc -g audio.c \
 	-IC:\wy-dev\sdl2-mingw-32\include \
 	-IC:\wy-dev\sdl2-mingw-32\include\SDL2 \
 	-IC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\include \
@@ -10,7 +10,20 @@ all : main2.cpp
 	-lmingw32 -lSDL2main -lSDL2 -lSDL2_image  \
 	-lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lsetupapi -lversion \
 	-static \
-	-o bin\main2
+	-o bin\audio
+
+# all : main2.cpp
+# 	g++ -g main2.cpp \
+# 	-IC:\wy-dev\sdl2-mingw-32\include \
+# 	-IC:\wy-dev\sdl2-mingw-32\include\SDL2 \
+# 	-IC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\include \
+# 	-LC:\wy-dev\sdl2-mingw-32\lib \
+# 	-LC:\wy-dev\sdl2-mingw-32\lib\SDL2 \
+# 	-LC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\lib \
+# 	-lmingw32 -lSDL2main -lSDL2 -lSDL2_image  \
+# 	-lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lsetupapi -lversion \
+# 	-static \
+# 	-o bin\main2
 
 # Sample C++ command
 # all : main.cpp
