@@ -6,15 +6,12 @@ OBJ_NAME = bin\main
 
 #This is the target that compiles our executable
 all : $(OBJS)
-	g++ -g $(OBJS) \
+	g++ $(OBJS) -g -ggdb3 -O3 \
 	-IC:\wy-dev\sdl2-mingw-32\include \
-	-IC:\wy-dev\sdl2-mingw-32\include\SDL2 \
-	-IC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\include \
 	-LC:\wy-dev\sdl2-mingw-32\lib \
-	-LC:\wy-dev\sdl2-mingw-32\lib\SDL2 \
-	-LC:\wy-dev\SDL2_image-2.0.5\i686-w64-mingw32\lib \
-	-lmingw32 -lSDL2main -lSDL2 -lSDL2_image  \
+	-lmingw32 -lSDL2main -lSDL2  \
 	-lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lsetupapi -lversion \
+	-lm \
 	-static \
 	-o $(OBJ_NAME)
 
