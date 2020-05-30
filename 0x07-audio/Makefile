@@ -20,13 +20,15 @@ all : $(OBJS)
 
 # Sample C code that works: https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
 # all : main.c
-# 	gcc -ggdb3 -O3 -std=c99 \
+# 	gcc main.c -ggdb3 -O3 -std=c99 \
 # 	-Wall -Wextra -pedantic \
 # 	-IC:\wy-dev\sdl2-mingw-32\include \
 # 	-LC:\wy-dev\sdl2-mingw-32\lib \
 # 	-lmingw32 -lSDL2main -lSDL2 \
 # 	-lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lsetupapi -lversion \
-# 	-o main.exe main.c -lSDL2 -lm
+# 	-lm \
+# 	-static \
+# 	-o bin\main.exe
 
 # web build (-03 flag helps!)
-# emcc main.cpp -O3 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS=["png"] --preload-file assets -o bin-js/webgame.html
+# emcc main.c -O3 -s USE_SDL=2 -o bin-js/webgame.html
