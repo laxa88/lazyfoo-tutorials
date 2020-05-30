@@ -203,7 +203,6 @@ class WY_Audio
 
     Uint16 C0waveformLength;
     float *sineWave;
-    int isPlaying = 0;
 
 public:
     WY_Audio()
@@ -240,44 +239,37 @@ public:
 
     void play()
     {
-        SDL_Delay(42);
-        SDL_PauseAudioDevice(AudioDevice, isPlaying);
+        SDL_PauseAudioDevice(AudioDevice, 0);
+    }
+
+    void pause()
+    {
+        SDL_PauseAudioDevice(AudioDevice, 1);
     }
 
     void loop()
     {
-        while (running)
+        for (i = 0; i < samplesPerFrame; i++)
+            audioBuffer[audioMainLeftOff + i] = 0;
+        speak(&testVoiceA);
+        speak(&testVoiceB);
+        speak(&testVoiceC);
+        if (audioMainAccumulator > 1)
         {
-            while (SDL_PollEvent(&event) != 0)
-            {
-                if (event.type == SDL_QUIT)
-                {
-                    running = SDL_FALSE;
-                }
-            }
-
             for (i = 0; i < samplesPerFrame; i++)
-                audioBuffer[audioMainLeftOff + i] = 0;
-            speak(&testVoiceA);
-            speak(&testVoiceB);
-            speak(&testVoiceC);
-            if (audioMainAccumulator > 1)
             {
-                for (i = 0; i < samplesPerFrame; i++)
-                {
-                    audioBuffer[audioMainLeftOff + i] /= audioMainAccumulator;
-                }
+                audioBuffer[audioMainLeftOff + i] /= audioMainAccumulator;
             }
-            audioMainAccumulator = 0;
-            audioMainLeftOff += samplesPerFrame;
-            if (audioMainLeftOff == audioBufferLength)
-                audioMainLeftOff = 0;
-            mainAudioLead = audioMainLeftOff - SDL_AtomicGet(&audioCallbackLeftOff);
-            if (mainAudioLead < 0)
-                mainAudioLead += audioBufferLength;
-            if (mainAudioLead < floatStreamLength)
-                printf("An audio collision may have occured!\n");
-            SDL_Delay(mainAudioLead * syncCompensationFactor);
         }
+        audioMainAccumulator = 0;
+        audioMainLeftOff += samplesPerFrame;
+        if (audioMainLeftOff == audioBufferLength)
+            audioMainLeftOff = 0;
+        mainAudioLead = audioMainLeftOff - SDL_AtomicGet(&audioCallbackLeftOff);
+        if (mainAudioLead < 0)
+            mainAudioLead += audioBufferLength;
+        if (mainAudioLead < floatStreamLength)
+            printf("An audio collision may have occured!\n");
+        SDL_Delay(mainAudioLead * syncCompensationFactor);
     }
 };

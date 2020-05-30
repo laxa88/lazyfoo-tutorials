@@ -14,6 +14,7 @@ private:
     SDL_Event windowEvent;
     WY_Image *mFontImage;
     WY_MonoFont *mFont;
+    WY_Audio *mAudio;
 
     void loadMedia()
     {
@@ -33,6 +34,12 @@ private:
         mFont->setDebug(true);
     }
 
+    void createAudio()
+    {
+        mAudio = new WY_Audio();
+        mAudio->play();
+    }
+
 public:
     Game(const char *title, int w, int h, int ps) : Wyngine(title, w, h, ps)
     {
@@ -40,6 +47,7 @@ public:
         {
             loadMedia();
             createFont();
+            createAudio();
         }
     }
 
@@ -66,9 +74,19 @@ public:
                 case SDLK_LEFT:
                     mFont->setW(mFont->getW() - 5);
                     break;
+
+                case SDLK_a:
+                    mAudio->pause();
+                    break;
+
+                case SDLK_p:
+                    mAudio->play();
+                    break;
                 }
             }
         }
+
+        mAudio->loop();
     }
 
     void onRender()
@@ -157,12 +175,12 @@ public:
 
 int main(int argc, char *argv[])
 {
-    WY_Audio *wyAudio = new WY_Audio();
-    wyAudio->play();
-    wyAudio->loop();
+    // WY_Audio *wyAudio = new WY_Audio();
+    // wyAudio->play();
+    // wyAudio->loop();
 
-    // Game *game = new Game("0x06 font sprite", 256, 224, 3);
-    // game->run();
+    Game *game = new Game("0x06 font sprite", 256, 224, 3);
+    game->run();
 
     // WY_Audio *wyAudio = new WY_Audio();
     // wyAudio->setup();
