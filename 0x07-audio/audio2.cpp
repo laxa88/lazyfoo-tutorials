@@ -1,4 +1,11 @@
 // https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
+// emcc audio2.cpp -O3 -s USE_SDL=2 -o bin-js/webgame.html
+
+// 2020-05-31
+// - desktop builds for sdl1, sdl2, web
+// - sdl1 doesn't have sound
+// - sdl2 has sound
+// - web build doesn't have sound
 
 #include <math.h>
 #include <stdio.h>
@@ -20,12 +27,61 @@ void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
     }
 }
 
-int main(int argc, char *argv[])
+void play_sdl1()
 {
-    if (SDL_Init(SDL_INIT_AUDIO) != 0)
-        SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
+    printf("\nPlaying SDL1 audio");
+
+    // for emscripten
+    int sample_nr = 0;
+
+    SDL_AudioSpec want;
+    want.freq = SAMPLE_RATE;        // number of samples per second
+    want.format = AUDIO_F32;        // sample type (here: signed short i.e. 16 bit)
+    want.channels = 1;              // only one channel
+    want.samples = 2048;            // buffer-size
+    want.callback = audio_callback; // function SDL calls periodically to refill the buffer
+    want.userdata = &sample_nr;     // counter, keeping track of current sample number
+
+    SDL_AudioSpec have;
+
+    if (SDL_OpenAudio(&want, &have) != 0)
+        printf("Failed to open audio 1: %s\n", SDL_GetError());
+
+    if (want.format != have.format)
+        printf("Failed to get the desired AudioSpec\n");
+
+    printf("\n#want:\n");
+    printf("freq: %d\n", want.freq);
+    printf("format: %d\n", want.format);
+    printf("channels: %d\n", want.channels);
+    printf("samples: %d\n", want.samples);
+    printf("userdata: %d\n", want.userdata);
+
+    printf("\n#have:\n");
+    printf("freq: %d\n", have.freq);
+    printf("format: %d\n", have.format);
+    printf("channels: %d\n", have.channels);
+    printf("samples: %d\n", have.samples);
+    printf("userdata: %d\n", have.userdata);
+
+    printf("Playing sound...");
+    SDL_PauseAudio(0); // start playing sound
+    SDL_Delay(3000);   // wait while sound is playing
+    SDL_PauseAudio(1); // stop playing sound
+    SDL_CloseAudio();
+    printf("Done.");
+}
+
+void play_sdl2()
+{
+    printf("\nPlaying SDL2 audio");
+
+    // for desktop
 
     int sample_nr = 0;
+
+    // AUDIO_F32 = 33056
+    // AUDIO_S16SYS = 32784
 
     SDL_AudioSpec want;
     want.freq = SAMPLE_RATE;        // number of samples per second
@@ -36,21 +92,46 @@ int main(int argc, char *argv[])
     want.userdata = &sample_nr;     // counter, keeping track of current sample number
 
     SDL_AudioSpec have;
-    if (SDL_OpenAudio(&want, &have) != 0)
-        printf("Failed to open audio: %s", SDL_GetError());
-    if (want.format != have.format)
-        printf("Failed to get the desired AudioSpec");
 
     SDL_AudioDeviceID device_id = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
 
-    if (device_id == 0)
-        printf("Failed to open audio: %s\n", SDL_GetError());
+    if (want.format != have.format)
+        printf("Failed to get the desired AudioSpec\n");
 
+    printf("\ndevice_id: %d", device_id);
+
+    printf("\n#want:\n");
+    printf("freq: %d\n", want.freq);
+    printf("format: %d\n", want.format);
+    printf("channels: %d\n", want.channels);
+    printf("samples: %d\n", want.samples);
+    printf("userdata: %d\n", want.userdata);
+
+    printf("\n#have:\n");
+    printf("freq: %d\n", have.freq);
+    printf("format: %d\n", have.format);
+    printf("channels: %d\n", have.channels);
+    printf("samples: %d\n", have.samples);
+    printf("userdata: %d\n", have.userdata);
+
+    if (device_id == 0)
+        printf("Failed to open audio 2: %s\n", SDL_GetError());
+
+    printf("Playing sound...");
     SDL_PauseAudioDevice(device_id, 0); // start playing sound
     SDL_Delay(3000);                    // wait while sound is playing
     SDL_PauseAudioDevice(device_id, 1); // stop playing sound
-
     SDL_CloseAudio();
+    printf("Done.");
+}
+
+int main(int argc, char *argv[])
+{
+    if (SDL_Init(SDL_INIT_AUDIO) != 0)
+        SDL_Log("Failed to initialize SDL: %s\n", SDL_GetError());
+
+    // play_sdl1();
+    play_sdl2();
 
     return 0;
 }
