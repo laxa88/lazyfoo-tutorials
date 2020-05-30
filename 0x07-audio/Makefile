@@ -3,7 +3,7 @@ OBJ_NAME = bin\main
 
 # Sample C++ command
 all : main.cpp
-	g++ main.cpp -g -ggdb3 -O3 \
+	g++ main.cpp -ggdb3 -O3 \
 	-Wall -Wextra -pedantic \
 	-IC:\wy-dev\sdl2-mingw-32\include \
 	-LC:\wy-dev\sdl2-mingw-32\lib \
@@ -14,7 +14,7 @@ all : main.cpp
 
 # Sample C command that works: https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
 # all : main.c
-# 	gcc main.c -g -ggdb3 -O3 -std=c99 \
+# 	gcc main.c -ggdb3 -O3 -std=c99 \
 # 	-Wall -Wextra -pedantic \
 # 	-IC:\wy-dev\sdl2-mingw-32\include \
 # 	-LC:\wy-dev\sdl2-mingw-32\lib \
