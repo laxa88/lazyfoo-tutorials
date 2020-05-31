@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "WY make",
+      "command": "C:\\MinGW\\bin\\mingw32-make.exe",
+      "args": [],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+    // {
+    //   "type": "shell",
+    //   "label": "WY g++",
+    //   "command": "C:\\MinGW\\bin\\g++.exe",
+    //   "args": [
+    //     "-g",
+    //     "${file}",
+    //     "-o",
+    //     "${fileDirname}\\bin\\${fileBasenameNoExtension}.exe"
+    //   ],
+    //   "options": {
+    //     "cwd": "C:\\MinGW\\bin"
+    //   },
+    //   "problemMatcher": ["$gcc"],
+    //   "group": {
+    //     "kind": "build",
+    //     "isDefault": true
+    //   }
+    // }
+  ]
+}
