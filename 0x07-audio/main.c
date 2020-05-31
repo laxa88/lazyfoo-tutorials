@@ -1,3 +1,7 @@
+// 2020-05-31 https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
+// works on desktop
+// not web-ready yet because of missing emscripten logic
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

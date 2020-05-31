@@ -49,7 +49,6 @@ all : audio.c
 # 	-static \
 # 	-o bin\main
 
-# Sample C command that works: https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
 # all : main.c
 # 	gcc main.c -ggdb3 -O3 -std=c99 \
 # 	-Wall -Wextra -pedantic \
