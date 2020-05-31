@@ -1,4 +1,5 @@
-// 2020-05-31: works for desktop
+// 2020-05-31: works for desktop and web
+// emcc wy-test.cpp -s USE_SDL=2 -o bin-js/audio.html
 
 #include <cstdint>
 #include <SDL2/SDL.h>
@@ -90,8 +91,18 @@ class Game : public Wyngine
 {
     SDL_Event windowEvent;
     SDL_Texture *tSprite = NULL;
+    Sound *sound;
 
 public:
+    Game()
+    {
+        SDL_Init(SDL_INIT_AUDIO);
+
+        sound = new Sound();
+
+        sound->play();
+    }
+
     void onUpdate()
     {
         if (SDL_PollEvent(&windowEvent))
@@ -107,6 +118,14 @@ public:
                 case SDLK_ESCAPE:
                     mGameRunning = false;
                     break;
+
+                case SDLK_1:
+                    sound->play();
+                    break;
+
+                case SDLK_2:
+                    sound->stop();
+                    break;
                 }
             }
         }
@@ -115,13 +134,7 @@ public:
 
 int main(int argc, char *args[])
 {
-    SDL_Init(SDL_INIT_AUDIO);
-
     Game *game = new Game();
-
-    Sound *sound = new Sound();
-
-    sound->play();
 
     game->run();
 
