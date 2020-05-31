@@ -1,3 +1,4 @@
+// modified from https://stackoverflow.com/questions/10110905/simple-sound-wave-generator-with-sdl-in-c
 // 2020-05-31: works for desktop and web
 // emcc wy-test.cpp -s USE_SDL=2 -o bin-js/audio.html
 
