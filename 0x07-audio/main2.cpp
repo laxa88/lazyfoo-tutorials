@@ -1,3 +1,6 @@
+// https://codereview.stackexchange.com/questions/41086/play-some-sine-waves-with-sdl2
+// check main() for comments
+
 #include <SDL2/SDL.h>
 #include <cstring>
 
@@ -75,11 +78,11 @@ public:
                     mFont->setW(mFont->getW() - 5);
                     break;
 
-                case SDLK_a:
+                case SDLK_1:
                     mAudio->pause();
                     break;
 
-                case SDLK_p:
+                case SDLK_2:
                     mAudio->play();
                     break;
                 }
@@ -95,94 +98,98 @@ public:
     }
 };
 
-// class WY_Audio
-// {
-//     float syncCompensationFactor = 0.0016;
-//     Sint32 mainAudioLead;
-//     Uint32 i;
+class WY_Audio2
+{
+    float syncCompensationFactor = 0.0016;
+    Sint32 mainAudioLead;
+    Uint32 i;
 
-//     voice testVoiceA;
-//     voice testVoiceB;
-//     voice testVoiceC;
-//     Uint16 C0waveformLength = getWaveformLength(0);
-//     float *sineWave;
+    voice testVoiceA;
+    voice testVoiceB;
+    voice testVoiceC;
+    Uint16 C0waveformLength = getWaveformLength(0);
+    float *sineWave;
 
-// public:
-//     void setup()
-//     {
-//         testVoiceA.volume = 1;
-//         testVoiceB.volume = 1;
-//         testVoiceC.volume = 1;
-//         testVoiceA.pan = 0.5;
-//         testVoiceB.pan = 0;
-//         testVoiceC.pan = 1;
-//         testVoiceA.phase = 0;
-//         testVoiceB.phase = 0;
-//         testVoiceC.phase = 0;
-//         testVoiceA.frequency = getFrequency(45);
-//         testVoiceB.frequency = getFrequency(49);
-//         testVoiceC.frequency = getFrequency(52);
-//         Uint16 C0waveformLength = getWaveformLength(0);
-//         testVoiceA.waveformLength = C0waveformLength;
-//         testVoiceB.waveformLength = C0waveformLength;
-//         testVoiceC.waveformLength = C0waveformLength;
-//         // float sineWave[C0waveformLength];
-//         sineWave = new float[C0waveformLength]();
-//         buildSineWave(sineWave, C0waveformLength);
-//         testVoiceA.waveform = sineWave;
-//         testVoiceB.waveform = sineWave;
-//         testVoiceC.waveform = sineWave;
-//     }
+public:
+    void setup()
+    {
+        testVoiceA.volume = 1;
+        testVoiceB.volume = 1;
+        testVoiceC.volume = 1;
+        testVoiceA.pan = 0.5;
+        testVoiceB.pan = 0;
+        testVoiceC.pan = 1;
+        testVoiceA.phase = 0;
+        testVoiceB.phase = 0;
+        testVoiceC.phase = 0;
+        testVoiceA.frequency = getFrequency(45);
+        testVoiceB.frequency = getFrequency(49);
+        testVoiceC.frequency = getFrequency(52);
+        Uint16 C0waveformLength = getWaveformLength(0);
+        testVoiceA.waveformLength = C0waveformLength;
+        testVoiceB.waveformLength = C0waveformLength;
+        testVoiceC.waveformLength = C0waveformLength;
+        // float sineWave[C0waveformLength];
+        sineWave = new float[C0waveformLength]();
+        buildSineWave(sineWave, C0waveformLength);
+        testVoiceA.waveform = sineWave;
+        testVoiceB.waveform = sineWave;
+        testVoiceC.waveform = sineWave;
+    }
 
-//     void play()
-//     {
-//         SDL_Delay(42);
-//         SDL_PauseAudioDevice(AudioDevice, 0);
-//         while (running)
-//         {
-//             while (SDL_PollEvent(&event) != 0)
-//             {
-//                 if (event.type == SDL_QUIT)
-//                 {
-//                     running = SDL_FALSE;
-//                 }
-//             }
-//             for (i = 0; i < samplesPerFrame; i++)
-//                 audioBuffer[audioMainLeftOff + i] = 0;
-//             speak(&testVoiceA);
-//             speak(&testVoiceB);
-//             speak(&testVoiceC);
-//             if (audioMainAccumulator > 1)
-//             {
-//                 for (i = 0; i < samplesPerFrame; i++)
-//                 {
-//                     audioBuffer[audioMainLeftOff + i] /= audioMainAccumulator;
-//                 }
-//             }
-//             audioMainAccumulator = 0;
-//             audioMainLeftOff += samplesPerFrame;
-//             if (audioMainLeftOff == audioBufferLength)
-//                 audioMainLeftOff = 0;
-//             mainAudioLead = audioMainLeftOff - SDL_AtomicGet(&audioCallbackLeftOff);
-//             if (mainAudioLead < 0)
-//                 mainAudioLead += audioBufferLength;
-//             if (mainAudioLead < floatStreamLength)
-//                 printf("An audio collision may have occured!\n");
-//             SDL_Delay(mainAudioLead * syncCompensationFactor);
-//         }
-//     }
-// };
+    void play()
+    {
+        SDL_Delay(42);
+        SDL_PauseAudioDevice(AudioDevice, 0);
+        while (running)
+        {
+            while (SDL_PollEvent(&event) != 0)
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    running = SDL_FALSE;
+                }
+            }
+            for (i = 0; i < samplesPerFrame; i++)
+                audioBuffer[audioMainLeftOff + i] = 0;
+            speak(&testVoiceA);
+            speak(&testVoiceB);
+            speak(&testVoiceC);
+            if (audioMainAccumulator > 1)
+            {
+                for (i = 0; i < samplesPerFrame; i++)
+                {
+                    audioBuffer[audioMainLeftOff + i] /= audioMainAccumulator;
+                }
+            }
+            audioMainAccumulator = 0;
+            audioMainLeftOff += samplesPerFrame;
+            if (audioMainLeftOff == audioBufferLength)
+                audioMainLeftOff = 0;
+            mainAudioLead = audioMainLeftOff - SDL_AtomicGet(&audioCallbackLeftOff);
+            if (mainAudioLead < 0)
+                mainAudioLead += audioBufferLength;
+            if (mainAudioLead < floatStreamLength)
+            {
+                // printf("\nAn audio collision may have occured:\n%d\n%d", mainAudioLead, floatStreamLength);
+                printf("\nAn audio collision may have occured...");
+                // printf("\nvalues: %u", floatStreamLength);
+            }
+            SDL_Delay(mainAudioLead * syncCompensationFactor);
+        }
+    }
+};
 
 int main(int argc, char *argv[])
 {
-    // WY_Audio *wyAudio = new WY_Audio();
-    // wyAudio->play();
-    // wyAudio->loop();
+    // - internally uses wyngine audio.h
+    // - compiles to desktop and web
+    // - web stutters with regular audio collision message
+    // Game *game = new Game("0x07 audio", 256, 224, 3);
+    // game->run();
 
-    Game *game = new Game("0x06 font sprite", 256, 224, 3);
-    game->run();
-
-    // WY_Audio *wyAudio = new WY_Audio();
+    // - compiles to desktop only
+    // WY_Audio2 *wyAudio = new WY_Audio2();
     // wyAudio->setup();
     // if (init())
     //     return 1;
