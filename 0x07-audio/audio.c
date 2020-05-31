@@ -1,4 +1,7 @@
 // ref: Hands-on Game Development with Web Assembly by Rick Battagline
+// 2020-05-31 - works for desktop and web, for audio playback and synth, but stutters
+// 2020-06-01 - fixed stutter issue, added comments
+// emcc audio.c --preload-file assets -s USE_SDL=2 -o bin-js/audio.html
 
 #include <SDL2/SDL.h>
 #include <stdint.h>
@@ -86,6 +89,9 @@ SDL_AudioSpec have;
 //     SDL_AtomicSet(&audioCallbackLeftOff, localAudioCallbackLeftOff);
 // }
 
+// putting this out easily fixes the stutter issue
+int sample_nr = 0;
+
 void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
 {
     Sint16 *buffer = (Sint16 *)raw_buffer;
@@ -93,14 +99,16 @@ void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
     // int &sample_nr(*(int *)user_data); // valid c but crashes
     // int &sample_nr = (*(int *)user_data); // valid c++ but crashes
     // int sample_nr(*(int *)user_data); // c, stutters but works
-    int sample_nr = (*(int *)user_data); // c++, stutters but works
+    // int sample_nr = (*(int *)user_data); // c++, stutters but works
     // printf("\ncallback1: %d, %d, %d", *(int *)user_data, &user_data, user_data);
 
-    int *sample_nr2 = (int *)user_data;
-    printf("\ncurr %d, %d", (int *)user_data, (*(int *)user_data));
+    // int *sample_nr2 = (int *)user_data;
+    // printf("\ncurr %d, %d", (int *)user_data, (*(int *)user_data));
     // printf("\ncurr %d, %d", sample_nr2, *sample_nr2);
     // printf("\nwant %d, %d", want.userdata, &(want.userdata));
     // printf("\nhave %d, %d", have.userdata, &(want.userdata));
+
+    printf("\nsample: %d", sample_nr);
 
     for (int i = 0; i < length; i++, sample_nr++)
     {
@@ -111,7 +119,8 @@ void audio_callback(void *user_data, Uint8 *raw_buffer, int bytes)
 
 void init_synth()
 {
-    int sample_nr = 0;
+    // this won't work because the value is cleaned when exiting init_synth() scope
+    // int sample_nr = 0;
 
     printf("\ninit %d, %d", &sample_nr, sample_nr);
 
@@ -222,6 +231,3 @@ int main(int argc, char *argv[])
 
     return 1;
 }
-
-// 2020-05-31 - works for desktop and web, for audio playback and synth, but stutters
-// emcc audio.c --preload-file assets -s USE_SDL=2 -o bin-js/audio.html
