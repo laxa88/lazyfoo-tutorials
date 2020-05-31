@@ -218,7 +218,8 @@ int main(int argc, char *argv[])
     testVoiceA.waveformLength = C0waveformLength;
     testVoiceB.waveformLength = C0waveformLength;
     testVoiceC.waveformLength = C0waveformLength;
-    float sineWave[C0waveformLength];
+    // float *sineWave = (float *)malloc(C0waveformLength); // works, no errors in c
+    float sineWave[C0waveformLength]; // works for c++
     buildSineWave(sineWave, C0waveformLength);
     testVoiceA.waveform = sineWave;
     testVoiceB.waveform = sineWave;
