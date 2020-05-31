@@ -79,12 +79,33 @@ void Sound::SDLAudioCallback(void *data, Uint8 *buffer, int length)
 {
     printf("\naudio playback");
     Sound *sound = reinterpret_cast<Sound *>(data);
-
     for (int i = 0; i < length; ++i)
     {
+        // https://stackoverflow.com/questions/33274511/playing-sine-soundwave-with-sdl2-noise-scratch-issue
+        // buffer[i] = 128; // 128 is silence in uint8
+
         buffer[i] = (std::sin(sound->m_samplePos / sound->m_samplesPerSine * M_PI * 2) + 1) * 127.5;
         ++sound->m_samplePos;
     }
+
+    // https://stackoverflow.com/questions/17846394/problems-with-sdl-audio-no-output
+    // // the format of stream depends on actual.format in main()
+    // // we're assuming it's AUDIO_S16SYS
+    // short *samples = reinterpret_cast<short *>(buffer);
+    // size_t numSamples = length / sizeof(short);
+    // const unsigned int phase_delta = 600;
+    // static unsigned int phase = 0;
+    // // loop over all our samples
+    // for (size_t i = 0; i < numSamples; ++i)
+    // {
+    //     phase += phase_delta;
+    //     short out = 0;
+    //     if ((phase >> 8) < 127)
+    //         out = SHRT_MAX;
+    //     else
+    //         out = 0;
+    //     samples[i] = out;
+    // }
 }
 
 class Game : public Wyngine
