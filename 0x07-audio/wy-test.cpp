@@ -1,3 +1,5 @@
+// 2020-05-31: works for desktop
+
 #include <cstdint>
 #include <SDL2/SDL.h>
 #include <cmath>
@@ -46,7 +48,7 @@ Sound::Sound()
     wantSpec.callback = SDLAudioCallback;
     wantSpec.userdata = this;
 
-    m_device = SDL_OpenAudioDevice(NULL, 0, &wantSpec, &haveSpec, SDL_AUDIO_ALLOW_ANY_CHANGE);
+    m_device = SDL_OpenAudioDevice(NULL, 0, &wantSpec, &haveSpec, 0);
     if (m_device == 0)
     {
         std::cout << "Failed to open audio: " << SDL_GetError() << std::endl;
@@ -113,6 +115,8 @@ public:
 
 int main(int argc, char *args[])
 {
+    SDL_Init(SDL_INIT_AUDIO);
+
     Game *game = new Game();
 
     Sound *sound = new Sound();
