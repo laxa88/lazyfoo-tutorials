@@ -189,12 +189,12 @@ int main(int argc, char *argv[])
     // game->run();
 
     // - compiles to desktop only
-    // WY_Audio2 *wyAudio = new WY_Audio2();
-    // wyAudio->setup();
-    // if (init())
-    //     return 1;
-    // wyAudio->play();
-    // onExit();
+    WY_Audio2 *wyAudio = new WY_Audio2();
+    wyAudio->setup();
+    if (init())
+        return 1;
+    wyAudio->play();
+    onExit();
 
     return 0;
 }
