@@ -223,5 +223,5 @@ int main(int argc, char *argv[])
     return 1;
 }
 
-// 2020-05-31 - works for audio playback and synth, but stutters
+// 2020-05-31 - works for desktop and web, for audio playback and synth, but stutters
 // emcc audio.c --preload-file assets -s USE_SDL=2 -o bin-js/audio.html
