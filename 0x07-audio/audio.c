@@ -28,10 +28,9 @@ struct audio_clip
 void play_audio(struct audio_clip *clip)
 {
     int success = SDL_QueueAudio(device_id, clip->buf, clip->len);
+
     if (success < 0)
-    {
         printf("SDL_QueueAudio %s failed: %s\n", clip->file_name, SDL_GetError());
-    }
 }
 
 void init_audio(char *file_name, struct audio_clip *clip)
@@ -42,6 +41,19 @@ void init_audio(char *file_name, struct audio_clip *clip)
     {
         printf("Failed to load wav file: %s\n", SDL_GetError());
     }
+}
+
+void init_playback()
+{
+    if (device_id != 0)
+        SDL_CloseAudioDevice(device_id);
+
+    device_id = SDL_OpenAudioDevice(NULL, 0, &(laser_snd.spec), NULL, 0);
+
+    if (device_id == 0)
+        printf("Failed to open audio: %s\n", SDL_GetError());
+
+    SDL_PauseAudioDevice(device_id, 0);
 }
 
 void input_loop()
@@ -55,6 +67,7 @@ void input_loop()
             case SDLK_ESCAPE:
                 gameRunning = false;
                 break;
+
             case SDLK_1:
                 printf("key 1 release\n");
                 play_audio(&laser_snd);
@@ -64,6 +77,11 @@ void input_loop()
                 printf("key 2 release\n");
                 play_audio(&explosion_snd);
                 break;
+
+            case SDLK_6:
+                printf("key 6 release\n");
+                init_playback();
+                break;
             }
         }
     }
@@ -71,7 +89,6 @@ void input_loop()
 
 int main(int argc, char *argv[])
 {
-
     if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1))
     {
         printf("Could not init SDL: %s\n", SDL_GetError());
@@ -83,14 +100,7 @@ int main(int argc, char *argv[])
     init_audio(LASER, &laser_snd);
     init_audio(EXPLOSION, &explosion_snd);
 
-    device_id = SDL_OpenAudioDevice(NULL, 0, &(laser_snd.spec), NULL, 0);
-
-    if (device_id == 0)
-    {
-        printf("Failed to open audio: %s\n", SDL_GetError());
-    }
-
-    SDL_PauseAudioDevice(device_id, 0);
+    init_playback();
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(input_loop, 0, 1);
@@ -104,4 +114,5 @@ int main(int argc, char *argv[])
     return 1;
 }
 
-// emcc audio.c --preload-file assets -s USE_SDL=2 -o audio.html
+// 2020-05-31 - works for audio playback
+// emcc audio.c --preload-file assets -s USE_SDL=2 -o bin-js/audio.html
